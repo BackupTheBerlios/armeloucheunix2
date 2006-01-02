@@ -1,6 +1,12 @@
 
 package gid_metier;
 
+import java.sql.SQLException;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+import java.util.Vector;
 /**
  * <p>Represente l'ordonnance de d&eacute;l&eacute;gation de cr&eacute;dit.</p>
  * <p>L'ordonnance est le t&eacute;moin que se transmettent les acteurs de GID au long de la proc&eacute;dure P105, et a partir de laquelle ils mettent &agrave; jour leur comptabilit&eacute;s personnelles.</p>
@@ -104,7 +110,7 @@ public class OrdonnanceDelegation extends ObjetPersistant {
  * 
  * @poseidon-type gid_metier.Consommable
  */
-    private java.util.Collection consommable = new java.util.TreeSet();
+    private Vector consommable = new Vector();
 /**
  * <p>Represente le chapitre concern&eacute; par l'ordonnance de d&eacute;l&eacute;gation de cr&eacute;dit</p>
  * 
@@ -334,16 +340,16 @@ public class OrdonnanceDelegation extends ObjetPersistant {
     private gid_metier.Ordonnateur initiateur;
 
     /** @poseidon-generated */
-    public java.util.Collection getConsommables() {
+    public Vector getConsommables() {
         return consommable;
     }
     /** @poseidon-generated */
     public void addConsommable(gid_metier.Consommable consommable) {
-        if (! this.consommable.contains(consommable)) this.consommable.add(consommable);
+        if (! this.consommable.contains(consommable)) this.consommable.addElement(consommable);
     }
     /** @poseidon-generated */
     public void removeConsommable(gid_metier.Consommable consommable) {
-        this.consommable.remove(consommable);
+        this.consommable.removeElement(consommable);
     }
 
     /** @poseidon-generated */
@@ -405,7 +411,113 @@ public class OrdonnanceDelegation extends ObjetPersistant {
  * @return L'objet si il est trouvé, sinon null
  * @throws Si une erreur survient pendant la transaction
  */
-    public void chargeParId(int id) throws Exception{}
+    public void chargeParId(int id) throws Exception
+    {
+        Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+		String query="";
+		
+		 try
+		 {
+	        conn = ds.getConnection();
+			s = conn.createStatement();
+			query = "SELECT o.*, d.prenom as delegataire_prenom, d.nom as delegataire_nom, i.nom as initiateur_nom, i.prenom as initiateur_prenom, c.nom as comptable_nom, c.prenom as comptable_prenom FROM ordonnance o, ordonnateur i, sousordonnateur d, tg c WHERE o.id='" + id + "' AND i.id=o.initiateur_id AND c.id=comptable_id AND d.id=delegataire_id";
+			res = s.executeQuery(query);
+			if(res.next())
+			{
+			    setId(res.getInt("id"));
+			    setLibelle(res.getString("libelle"));
+			    setDate(res.getDate("date"));
+			    setMontant(res.getInt("montant"));
+			    setEtat(res.getInt("etat"));
+			    setVisaCCED(res.getBoolean("visacced"));
+			    setRefVisaCCED(res.getString("ref_visacced"));
+			    setDateVisaCCED(res.getDate("date_visacced"));
+			    setVisaTG(res.getBoolean("visatg"));
+			    setRefVisaTG(res.getString("ref_visatg"));
+			    setDateVisaTG(res.getDate("date_visatg"));
+			    
+			    Ordonnateur initiateur = new Ordonnateur();
+			    initiateur.setNom(res.getString("initiateur_nom"));
+			    initiateur.setPrenom(res.getString("initiateur_prenom"));
+			    SousOrdonnateur delegataire = new SousOrdonnateur();
+			    delegataire.setNom(res.getString("delegataire_nom"));
+			    delegataire.setPrenom(res.getString("delegataire_prenom"));
+			    TG comptable = new TG();
+			    comptable.setNom(res.getString("comptable_nom"));
+			    comptable.setPrenom(res.getString("comptable_prenom"));
+			    
+			    setInitiateur(initiateur);
+			    setDelegataire(delegataire);
+			    setComptable(comptable);
+			    try
+				{
+				    conn2 = ds.getConnection();
+					s2 = conn.createStatement();
+					res2 = s2.executeQuery("SELECT * FROM consomme,consommable  WHERE ordonnance_id='" + getId() + "' AND consommable_id=id");
+					while(res2.next())
+					{
+					    Consommable conso = new Consommable();
+					    conso.chargeParId(res2.getInt("id"));
+					    conso.setQuantite(res2.getInt("quantite"));
+					    addConsommable(conso);
+					}
+				}
+				catch (SQLException e)
+				{
+			        System.out.println(e.getMessage());
+				}
+				finally
+				{
+					if (res2 != null)
+					{
+						try {
+							res2.close();
+						} catch (SQLException e) {}
+						res2 = null;
+					}
+					if (s2 != null) {
+						try {
+							s2.close();
+						} catch (SQLException e) {}
+						s2 = null;
+					}
+					if (conn2 != null) {
+						try {
+							conn2.close();
+						} catch (SQLException e) {}
+						conn2 = null;
+					}
+				}
+			}
+		}
+	    catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}
+    }
 
 /**
  * <p>Enregistre l'objet dans le SGBD.</p>
@@ -414,8 +526,115 @@ public class OrdonnanceDelegation extends ObjetPersistant {
  * 
  * @throws Si une erreur survient pendant la transaction
  */
-    public void sauver() throws Exception{}
-
+    public void sauver() throws Exception
+    {
+        Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+		String query="";
+		
+		if(getId()==0)
+		{
+		    query = "INSERT INTO ordonnance(libelle, date, montant, etat, visacced, ref_visacced, visatg, ref_visatg, initiateur_id, comptable_id, delegataire_id) VALUES ('" + getLibelle() + "', '" + getDate() + "', '" + getMontant() + "', '" + getEtat() + "', '" + isVisaCCED() + "', '" + getRefVisaCCED() + "', '" + isVisaTG() + "', '" + getRefVisaTG() + "', '" + getInitiateur().getId() + "', '" + getComptable().getId() + "', '" + getDelegataire().getId() + "')";
+		}
+		else
+		{
+		    if(getDateVisaCCED()!=null)
+		    {
+		        query = "UPDATE ordonnance set libelle='" + getLibelle() + "', date='" + getDate() + "', montant='" + getMontant() + "', etat='" + getEtat() + "', visacced='" + isVisaCCED() + "', date_visacced='" + getDateVisaCCED() +  "', ref_visacced='" + getRefVisaCCED() + "', visatg='" + isVisaTG() + "', ref_visatg='" + getRefVisaTG() + "', initiateur_id='" + getInitiateur().getId() + "', comptable_id='" + getComptable().getId() + "', delegataire_id='" + getDelegataire().getId() + "' WHERE id='" + getId() + "'";
+		    }
+		    if(getDateVisaTG()!=null)
+		    {
+		        query = "UPDATE ordonnance set libelle='" + getLibelle() + "', date='" + getDate() + "', montant='" + getMontant() + "', etat='" + getEtat() + "', visacced='" + isVisaCCED() + "', date_visacced='" + getDateVisaCCED() +  "', ref_visacced='" + getRefVisaCCED() + "', visatg='" + isVisaTG() + "', date_visatg='" + getDateVisaTG() + "', ref_visatg='" + getRefVisaTG() + "', initiateur_id='" + getInitiateur().getId() + "', comptable_id='" + getComptable().getId() + "', delegataire_id='" + getDelegataire().getId() + "' WHERE id='" + getId() + "'";
+		    }
+		}
+        try
+		{
+	        conn = ds.getConnection();
+			s = conn.createStatement();
+			res = s.executeQuery(query);
+		}
+	    catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}
+		try
+		{
+		    conn = ds.getConnection();
+			s = conn.createStatement();
+		    query = "SELECT id from ordonnance WHERE libelle='" + getLibelle() + "' AND date='" + getDate() + "' AND montant='" + getMontant() + "'";
+			res = s.executeQuery(query);
+			if (res.next())
+			{
+			    setId(res.getInt("id"));
+			}
+		}
+	    catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}
+		Consommable conso;
+		for (int i=0; i<getConsommables().size(); i++)
+		{
+		    conso = (Consommable)(getConsommables()).elementAt(i);
+			query = "INSERT INTO consomme(consommable_id, ordonnance_id, quantite) VALUES ('" + conso.getId() + "', '" + getId()  + "', '" + conso.getQuantite() + "')";
+	        try 
+	        {
+	            conn = ds.getConnection();
+				s = conn.createStatement();
+				res = s.executeQuery(query);
+	        }
+	        catch(Exception e)
+	        {
+	            System.out.println(e);
+	        }
+        }
+		
+    }
+    
 /**
  * <p>Supprime l'objet du SGBD.</p>
  * <p>Cette operation correspond a une transaction.</p>
@@ -423,7 +642,43 @@ public class OrdonnanceDelegation extends ObjetPersistant {
  * 
  * @throws Si une erreur survient pendant la transaction
  */
-    public void supprimer() throws Exception{}
+    public void supprimer() throws Exception
+    {
+        Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+	    try
+		{
+	        conn = ds.getConnection();
+			s = conn.createStatement();
+			res = s.executeQuery("DELETE FROM ordonnancedelegation WHERE id='" + getId() + "'");
+		}
+	    catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}
+    }
 
 /**
  * <p>Retourne tous les objets (du type courant) stockes dans le SGBD.</p>
@@ -433,10 +688,49 @@ public class OrdonnanceDelegation extends ObjetPersistant {
  * @return Une collection de tous les objets
  * @throws Si une erreur survient pendant la transaction
  */
-    public java.util.ArrayList retournerTous() throws Exception{
-    	return null;
+    public java.util.Vector retournerTous() throws Exception
+    {
+        Vector tous = new Vector();
+    	Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+	    try
+		{
+	        conn = ds.getConnection();
+			s = conn.createStatement();
+			res = s.executeQuery("SELECT id FROM ordonnance ORDER BY libelle");
+			while(res.next())
+			{
+			    OrdonnanceDelegation ordo = new OrdonnanceDelegation();
+			    ordo.chargeParId(res.getInt("id"));
+			    tous.addElement(ordo);
+			}
+		}
+	    catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}  
+		return tous;
     }
-
-
-
 }

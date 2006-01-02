@@ -1,6 +1,14 @@
 
 package gid_metier;
 
+import java.sql.SQLException;
+import java.util.Vector;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+import java.util.Vector;
+
 /**
  * <p>Represente la comptabilit&eacute; des acteurs de GID</p>
  * 
@@ -18,7 +26,7 @@ public class Comptabilite extends ObjetPersistant {
  * 
  * @poseidon-type gid_metier.Operation
  */
-    private java.util.Collection operation = new java.util.TreeSet();
+    private java.util.Vector operation = new java.util.Vector();
 
 /**
  * <p>Retourne le solde de la comptabilit&eacute;</p>
@@ -52,12 +60,12 @@ public class Comptabilite extends ObjetPersistant {
     } 
 
     /** @poseidon-generated */
-    public java.util.Collection getOperations() {
+    public java.util.Vector getOperations() {
         return operation;
     }
     /** @poseidon-generated */
     public void addOperation(gid_metier.Operation operation) {
-        if (! this.operation.contains(operation)) this.operation.add(operation);
+        if (! this.operation.contains(operation)) this.operation.addElement(operation);
     }
     /** @poseidon-generated */
     public void removeOperation(gid_metier.Operation operation) {
@@ -74,8 +82,145 @@ public class Comptabilite extends ObjetPersistant {
  * @return L'objet si il est trouvé, sinon null
  * @throws Si une erreur survient pendant la transaction
  */
-    public void chargeParId(int id) throws Exception{}
-
+    public void chargeParId(int id) throws Exception
+    {
+        Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+	    try
+		{
+	        conn = ds.getConnection();
+			s = conn.createStatement();
+			String query;
+			res = s.executeQuery("SELECT * FROM comptabilite WHERE id='" + id + "'");
+			if (res.next())
+			{
+			    setId(res.getInt("id"));
+			    setSolde(res.getInt("solde"));
+			    try
+				{
+				    conn2 = ds.getConnection();
+					s2 = conn.createStatement();
+					res2 = s2.executeQuery("SELECT id FROM operation WHERE comptabilite_id='" + getId() + "'");
+					while(res2.next())
+					{
+					    Operation op = new Operation();
+					    op.chargeParIdCompta(res.getInt("id"));
+					    addOperation(op);
+					}
+				}
+				catch (SQLException e)
+				{
+			        System.out.println(e.getMessage());
+				}
+				finally
+				{
+					if (res2 != null)
+					{
+						try {
+							res2.close();
+						} catch (SQLException e) {}
+						res2 = null;
+					}
+					if (s2 != null) {
+						try {
+							s2.close();
+						} catch (SQLException e) {}
+						s2 = null;
+					}
+					if (conn2 != null) {
+						try {
+							conn2.close();
+						} catch (SQLException e) {}
+						conn2 = null;
+					}
+				}
+			}
+		}
+	    catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}
+    }
+    
+    public void chargeParIdActeur(int id) throws Exception
+    {
+        Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+	    try
+		{
+	        conn = ds.getConnection();
+			s = conn.createStatement();
+			String query;
+			res = s.executeQuery("SELECT * FROM comptabilite WHERE acteur_id='" + id + "'");
+			if (res.next())
+			{
+			    this.setId(res.getInt("id"));
+			    this.setSolde(res.getInt("solde"));
+			    res = s.executeQuery("SELECT * FROM operation WHERE comptabilite_id='" + getId() + "'");
+			    while (res.next())
+			    {
+			        Operation op = new Operation();
+			        op.setId(res.getInt("id"));
+			        op.setLibelle(res.getString("libelle"));
+			        op.setMontant(res.getInt("montant"));
+			        op.setDate(res.getDate("date"));
+			        op.setType(res.getString("type"));
+			        this.addOperation(op);
+			    }
+			}
+		}
+	    catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}
+    }
+    
+    public void sauver() throws Exception
+    {}
 /**
  * <p>Enregistre l'objet dans le SGBD.</p>
  * <p>Cette operation correspond a une transaction</p>
@@ -83,7 +228,52 @@ public class Comptabilite extends ObjetPersistant {
  * 
  * @throws Si une erreur survient pendant la transaction
  */
-    public void sauver() throws Exception{}
+    public void sauver(int acteur_id) throws Exception
+    {
+        Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+	    try
+		{
+	        conn = ds.getConnection();
+			s = conn.createStatement();
+			String query;
+			if (getId()==0)
+			{
+			    query = "INSERT INTO comptabilite(solde,acteur_id) VALUES ('" + getSolde() + "', '" + acteur_id + "')";
+			}
+			else
+			{
+			    query = "UPDATE comptabilite set solde = '" + getSolde() + "', acteur_id='" + acteur_id + "' WHERE id='" + getId() + "'";
+			}
+			res = s.executeQuery(query);
+		}
+	    catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}
+    }
 
 /**
  * <p>Supprime l'objet du SGBD.</p>
@@ -92,7 +282,43 @@ public class Comptabilite extends ObjetPersistant {
  * 
  * @throws Si une erreur survient pendant la transaction
  */
-    public void supprimer() throws Exception{}
+    public void supprimer() throws Exception
+    {
+        Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+	    try
+		{
+	        conn = ds.getConnection();
+			s = conn.createStatement();
+			res = s.executeQuery("DELETE FROM comptabilite WHERE id='" + getId() + "'");
+		}
+	    catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}
+    }
 
 /**
  * <p>Retourne tous les objets (du type courant) stockes dans le SGBD.</p>
@@ -102,8 +328,52 @@ public class Comptabilite extends ObjetPersistant {
  * @return Une collection de tous les objets
  * @throws Si une erreur survient pendant la transaction
  */
-    public java.util.ArrayList retournerTous() throws Exception{
-    	return null;
+    public Vector retournerTous() throws Exception
+    {
+        Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+		String query="";
+		Vector tous = new Vector();
+	    try
+		{
+	        conn = ds.getConnection();
+			s = conn.createStatement();
+			query = "SELECT id FROM comptabilite";
+			res = s.executeQuery(query);
+			while(res.next())
+			{
+			    Comptabilite compta = new Comptabilite();
+			    compta.chargeParId(res.getInt("id"));
+			    tous.addElement(compta);
+			}
+		}
+	    catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}  
+		return tous;
     }
 
  }

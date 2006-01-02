@@ -1,6 +1,13 @@
 
 package gid_metier;
 
+import java.sql.SQLException;
+import java.util.Vector;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+
 /**
  * <p>Represente les consommables pouvant etre achet&eacute;s par le cr&eacute;dit de l'ordonnance</p>
  * 
@@ -121,7 +128,50 @@ public class Consommable extends ObjetPersistant {
  * @return L'objet si il est trouvé, sinon null
  * @throws Si une erreur survient pendant la transaction
  */
-    public void chargeParId(int id) throws Exception{}
+    public void chargeParId(int id) throws Exception
+    {
+        Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+	    try
+		{
+	        conn = ds.getConnection();
+			s = conn.createStatement();
+			res = s.executeQuery("SELECT * FROM consommable WHERE id='" + id + "'");
+			if(res.next())
+			{
+			    setId(res.getInt("id"));
+			    setLibelle(res.getString("libelle"));
+			    setPrix(res.getInt("prix"));
+			    setUnite(res.getString("unite"));
+			}
+		}
+	    catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}  
+    }
 
 /**
  * <p>Enregistre l'objet dans le SGBD.</p>
@@ -130,7 +180,53 @@ public class Consommable extends ObjetPersistant {
  * 
  * @throws Si une erreur survient pendant la transaction
  */
-    public void sauver() throws Exception{}
+    public void sauver() throws Exception
+    {
+        Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+		String query="";
+	    try
+		{
+	        conn = ds.getConnection();
+			s = conn.createStatement();
+			if (getId()==0)
+			{
+			    query = "INSERT INTO consommable(libelle, prix, unite) VALUES ('" + getLibelle() + "', '" + getPrix() + "', '" + getUnite() + ")";
+			}
+			else
+			{
+			    query = "UPDATE consommable set libelle='" + getLibelle() + "', prix='" + getPrix() + "', unite='" + getUnite() + "' WHERE id='" + getId() + "'";
+			}
+			res = s.executeQuery(query);
+			
+		}
+	    catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}  
+    }
 
 /**
  * <p>Supprime l'objet du SGBD.</p>
@@ -139,7 +235,46 @@ public class Consommable extends ObjetPersistant {
  * 
  * @throws Si une erreur survient pendant la transaction
  */
-    public void supprimer() throws Exception{}
+    public void supprimer() throws Exception
+    {
+        Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+		String query="";
+	    try
+		{
+	        conn = ds.getConnection();
+			s = conn.createStatement();
+			query = "DELETE FROM consommable WHERE id='" + getId() + "'";
+			res = s.executeQuery(query);
+			
+		}
+	    catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		} 
+    }
 
 /**
  * <p>Retourne tous les objets (du type courant) stockes dans le SGBD.</p>
@@ -149,8 +284,52 @@ public class Consommable extends ObjetPersistant {
  * @return Une collection de tous les objets
  * @throws Si une erreur survient pendant la transaction
  */
-    public java.util.ArrayList retournerTous() throws Exception{
-    	return null;
+    public java.util.Vector retournerTous() throws Exception
+    {
+        Vector tous = new Vector();
+    	Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+	    try
+		{
+	        conn = ds.getConnection();
+			s = conn.createStatement();
+			res = s.executeQuery("SELECT * FROM consommable ORDER BY libelle");
+			while(res.next())
+			{
+			    Consommable c = new Consommable();
+			    c.setId(res.getInt("id"));
+			    c.setLibelle(res.getString("libelle"));
+			    c.setPrix(res.getInt("prix"));
+			    c.setUnite(res.getString("unite"));
+			    tous.addElement(c);
+			}
+		}
+	    catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}  
+		return tous;
     }
-
- }
+}

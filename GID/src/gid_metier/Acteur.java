@@ -38,7 +38,7 @@ public abstract class Acteur extends ObjetPersistant {
  * 
  * @poseidon-type gid_metier.OrdonnanceDelegation
  */
-    protected java.util.Collection aTraiter = new java.util.TreeSet();
+    protected java.util.Vector aTraiter = new java.util.Vector();
 /**
  * <p>Represente la comptabilit&eacute; personnelle de l'acteur.</p>
  * 
@@ -164,12 +164,12 @@ public abstract class Acteur extends ObjetPersistant {
     public abstract boolean identifie();
 
     /** @poseidon-generated */
-    public java.util.Collection getATraiters() {
+    public java.util.Vector getATraiters() {
         return aTraiter;
     }
     /** @poseidon-generated */
     public void addATraiter(gid_metier.OrdonnanceDelegation ordonnanceDelegation) {
-        if (! this.aTraiter.contains(ordonnanceDelegation)) this.aTraiter.add(ordonnanceDelegation);
+        /*if (! this.aTraiter.contains(ordonnanceDelegation)) */this.aTraiter.addElement(ordonnanceDelegation);
     }
     /** @poseidon-generated */
     public void removeATraiter(gid_metier.OrdonnanceDelegation ordonnanceDelegation) {

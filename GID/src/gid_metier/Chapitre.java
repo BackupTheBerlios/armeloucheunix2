@@ -1,8 +1,12 @@
 
 package gid_metier;
 
+import java.sql.SQLException;
 
-import java.sql.*;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+import java.util.Vector;
 
 /**
  * <p>Represente le chapitre (d'une ordonnance)</p>
@@ -83,49 +87,71 @@ public class Chapitre extends ObjetPersistant {
  * 
  * 
  * @param id l'identifiant de l'objet recherché
+ * @return L'objet si il est trouvé, sinon null
  * @throws Si une erreur survient pendant la transaction
  */
-    public void chargeParId(int id) throws Exception{
-    	
-    	String req;
-    	Statement s;
-    	ResultSet rs;
-    	
-    	req = "SELECT * FROM \"CHAPITRE\" ";
-    	req+= "WHERE \"ID\" = "+id;
-    	req+= ";";
-    	
-    	if (id == 0)
-    		throw new Exception ("Ne peut pas charger le chapitre - identifiant non défini");
-    	
-    	try{
-    		
-    		Class.forName("org.postgresql.Driver");
-    		conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/gid","postgres","postgres");
-    		conn.setAutoCommit(false);	
-    		
-    		s = conn.createStatement();
-    		
-    		rs = s.executeQuery(req);
-    		if (rs.next()){
-    			code = rs.getString("CODE");
-    			libelle = rs.getString("LIBELLE");	
-    			ligneBudgetaire.setId(rs.getInt("LIGNE_BUDGETAIRE_ID"));
-    		}
-    		
-    		System.out.println("hého !"+ligneBudgetaire.getId());		
-    		conn.commit();
-    		
-    		System.out.println(ligneBudgetaire.getId());
-    		//ligneBudgetaire.chargeParId(ligneBudgetaire.id);
-    		
-    	}
-
-    	catch(SQLException sqle){
-    		throw new Exception("Erreur dans la transaction - chargement de l'objet impossible");
-    	}
-    	
-    	
+    public void chargeParId(int id) throws Exception
+    {
+        Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+		String query="";
+		
+		 try
+		 {
+	        conn = ds.getConnection();
+			s = conn.createStatement();
+			query = "SELECT * FROM chapitre WHERE id='" + id + "'";
+			res = s.executeQuery(query);
+			if(res.next())
+			{
+			    setId(res.getInt("id"));
+			    setCode(res.getString("code"));
+			    setLibelle(res.getString("libelle"));
+			    ligneBudgetaire.chargeParId(res.getInt("ligne_budgetaire_id"));
+			}
+		}
+		  
+	    /*try
+		{
+	        conn = ds.getConnection();
+			s = conn.createStatement();
+			query = "SELECT chapitre.*, l.libelle as libelle_ligne FROM ligne_budgetaire l, chapitre  WHERE chapitre.id='" + id + "' AND ligne_budgetaire_id=l.id";
+			res = s.executeQuery(query);
+			if(res.next())
+			{
+			    setId(res.getInt("id"));
+			    setCode(res.getString("code"));
+			    setLibelle(res.getString("libelle"));
+			    ligneBudgetaire.setId(res.getInt("ligne_budgetaire_id"));
+			    ligneBudgetaire.setLibelle(res.getString("libelle_ligne"));
+			}
+		}*/
+	    catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}
     }
 
 /**
@@ -135,7 +161,53 @@ public class Chapitre extends ObjetPersistant {
  * 
  * @throws Si une erreur survient pendant la transaction
  */
-    public void sauver() throws Exception{}
+    public void sauver() throws Exception
+    {
+        Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+		String query="";
+	    try
+		{
+	        conn = ds.getConnection();
+			s = conn.createStatement();
+			if (getId()==0)
+			{
+			    query = "INSERT INTO chapitre(code,libelle, ligne_budgetaire_id) VALUES ('" + getCode() + "', '" + getLibelle() + "', " + getLigneBudgetaire().getId() + ")";
+			}
+			else
+			{
+			    query = "UPDATE chapitre set code='" + getCode() + "', libelle='" + getLibelle() + "', ligne_budgetaire_id='" + getLigneBudgetaire().getId() + "' WHERE id='" + getId() + "'";
+			}
+			res = s.executeQuery(query);
+			
+		}
+	    catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}  
+    }
 
 /**
  * <p>Supprime l'objet du SGBD.</p>
@@ -144,7 +216,45 @@ public class Chapitre extends ObjetPersistant {
  * 
  * @throws Si une erreur survient pendant la transaction
  */
-    public void supprimer() throws Exception{}
+    public void supprimer() throws Exception
+    {
+        Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+		String query="";
+	    try
+		{
+	        conn = ds.getConnection();
+			s = conn.createStatement();
+			query = "DELETE FROM chapitre WHERE id='" + getId() + "'";
+			res = s.executeQuery(query);
+		}
+	    catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}  
+    }
 
 /**
  * <p>Retourne tous les objets (du type courant) stockes dans le SGBD.</p>
@@ -154,8 +264,52 @@ public class Chapitre extends ObjetPersistant {
  * @return Une collection de tous les objets
  * @throws Si une erreur survient pendant la transaction
  */
-    public java.util.ArrayList retournerTous() throws Exception{
-    	return null;
+    public java.util.Vector retournerTous() throws Exception
+    {
+        Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+		String query="";
+		Vector tous = new Vector();
+	    try
+		{
+	        conn = ds.getConnection();
+			s = conn.createStatement();
+			query = "SELECT id FROM chapitre";
+			res = s.executeQuery(query);
+			while(res.next())
+			{
+			    Chapitre chap = new Chapitre();
+			    chap.chargeParId(res.getInt("id"));
+			    tous.addElement(chap);
+			}
+		}
+	    catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}  
+		return tous;
     }
 
  }

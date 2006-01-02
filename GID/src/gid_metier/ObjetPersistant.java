@@ -1,6 +1,10 @@
 
 package gid_metier;
 
+import java.sql.ResultSet;
+
+import javax.sql.DataSource;
+
 /**
  * <p>Repr&eacute;sente la classe des objets bas&eacute;s sur un support persistant, dans le cas pr&eacute;sent un SGBD.</p>
  * <p>La classe ObjetPersistant fournit ainsi les outils qui permettent d'impl&eacute;menter les interactions de base entre un objet java et son support (chargement, sauvegarde, suppression...).</p>
@@ -13,12 +17,17 @@ public abstract class ObjetPersistant {
  * 
  */
     protected int id;
-
+    protected ResultSet res = null;
+    protected ResultSet res2 = null;
+	protected DataSource ds; //la source de données
+	protected java.sql.Statement s;
+	protected java.sql.Statement s2;
 /**
  * <p>Represente l'objet de connexion avec le SGBD, par lequel passent toutes les transactions de notre application.</p>
  * 
  */
     protected static java.sql.Connection conn;
+    protected static java.sql.Connection conn2;
 
 /**
  * <p>Retourne id</p>
@@ -97,5 +106,5 @@ public abstract class ObjetPersistant {
  * @return Une collection de tous les objets
  * @throws Si une erreur survient pendant la transaction
  */
-    //public abstract java.util.ArrayList retournerTous() throws Exception;
+   // public abstract java.util.Vector retournerTous() throws Exception;
  }

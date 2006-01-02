@@ -1,8 +1,12 @@
+
 package gid_metier;
 
+import java.sql.SQLException;
+import java.util.Vector;
 
-import java.sql.*;
-import java.util.ArrayList;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
 
 /**
  * <p>Repr&eacute;sente une ligne budg&eacute;taire </p>
@@ -43,52 +47,103 @@ public class LigneBudgetaire extends ObjetPersistant {
  * 
  * @return 
  */
-    public java.util.List retournerChapitres() {        
-        // your code here
-        return null;
+    public java.util.Vector retournerChapitres() throws Exception {        
+        Vector tous = new Vector();
+    	Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+	    try
+		{
+	        conn = ds.getConnection();
+			s = conn.createStatement();
+			res = s.executeQuery("SELECT * FROM chapitre WHERE ligne_budgetaire_id='" + getId() + "' ORDER BY libelle");
+			while(res.next())
+			{
+			    Chapitre chap = new Chapitre();
+			    chap.setId(res.getInt("id"));
+			    chap.setCode(res.getString("code"));
+			    chap.setLibelle(res.getString("libelle"));
+			    tous.addElement(chap);
+			}
+		}
+	    catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}  
+		return tous;
     } 
     
 /**
  * <p>Charge (depuis le SGBD) l'objet correspondant a l'identifiant pass&eacute; en param&egrave;tre.</p>
- * 
  * <p>Cette op&eacute;ration correspont a une transaction.</p>
  * 
  * 
  * @param id l'identifiant de l'objet recherché
+ * @return L'objet si il est trouvé, sinon null
  * @throws Si une erreur survient pendant la transaction
  */
-    public void chargeParId(int id) throws Exception{
-    	
-    	String req;
-    	Statement s;
-    	ResultSet rs;
-    	
-    	req = "SELECT * FROM \"LIGNE_BUDGETAIRE\" ";
-    	req+= "WHERE \"ID\" = "+id;
-    	req+= ";";
-    	
-    	if (id == 0)
-    		throw new Exception ("Ne peut pas charger la ligne budgetaire - identifiant non défini");
-    	
-    	try{
-    		Class.forName("org.postgresql.Driver");
-    		conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/gid","postgres","postgres");
-    		conn.setAutoCommit(false);	
-    		
-    		s = conn.createStatement();
-    		
-    		rs = s.executeQuery(req);
-    		if (rs.next()){
-    			libelle = rs.getString("LIBELLE");	
-    		}
-    		    		
-    		conn.commit();
-    	}
-
-    	catch(SQLException sqle){
-    		throw new Exception("Erreur dans la transaction - chargement de l'objet impossible");
-    	}
-    	
+    public void chargeParId(int id) throws Exception
+    {
+    	Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+	    try
+		{
+	        conn = ds.getConnection();
+			s = conn.createStatement();
+			res = s.executeQuery("SELECT * FROM ligne_budgetaire WHERE id='" + id + "'");
+			if(res.next())
+			{
+			    setId(res.getInt("id"));
+			    setLibelle(res.getString("libelle"));
+			}
+		}
+	    catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}  
     }
 
 /**
@@ -98,34 +153,52 @@ public class LigneBudgetaire extends ObjetPersistant {
  * 
  * @throws Si une erreur survient pendant la transaction
  */
-    public void sauver() throws Exception{
-    	
-    	String req;
-    	Statement s;
-    	
-    	req = "INSERT INTO \"LIGNE_BUDGETAIRE\" ";
-    	if (id == 0)	// insertion
-    		req+= "VALUES (default,'"+libelle+"') ";
-    	else			// modification
-    		req+= "VALUES ('"+id+"','"+libelle+"') ";
-    	
-    	req+= ";";
-    	
-    	
-    	try{
-    		Class.forName("org.postgresql.Driver");
-    		conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/gid","postgres","postgres");
-    		conn.setAutoCommit(false);	
-    		
-    		s = conn.createStatement();
-    		
-    		s.executeUpdate(req);
-    		
-    		conn.commit();
-    	}
-    	catch(ClassNotFoundException cnfe){cnfe.printStackTrace();}
-    	catch(SQLException sqle){sqle.printStackTrace();}
-    	
+    public void sauver() throws Exception
+    {
+        Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+		String query="";
+	    try
+		{
+	        conn = ds.getConnection();
+			s = conn.createStatement();
+			if (getId()==0)
+			{
+			    query = "INSERT INTO ligne_budgetaire(libelle) VALUES ('" + getLibelle() + "')";
+			}
+			else
+			{
+			    query = "UPDATE ligne_budgetaire set libelle='" + getLibelle() + "' WHERE id='" + getId() + "'";
+			}
+			res = s.executeQuery(query);
+			
+		}
+	    catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}  
     }
 
 /**
@@ -135,30 +208,45 @@ public class LigneBudgetaire extends ObjetPersistant {
  * 
  * @throws Si une erreur survient pendant la transaction
  */
-    public void supprimer() throws Exception{
-    	
-    	String req;
-    	Statement s;
-    	
-    	req = "DELETE FROM \"LIGNE_BUDGETAIRE\" ";
-    	req+= "WHERE \"ID\" = "+id;
-    	req+= ";";
-    	
-    	
-    	try{
-    		Class.forName("org.postgresql.Driver");
-    		conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/gid","postgres","postgres");
-    		conn.setAutoCommit(false);	
-    		
-    		s = conn.createStatement();
-    		
-    		s.executeUpdate(req);
-    		
-    		conn.commit();
-    	}
-    	catch(ClassNotFoundException cnfe){cnfe.printStackTrace();}
-    	catch(SQLException sqle){sqle.printStackTrace();}
-    	
+    public void supprimer() throws Exception
+    {
+        Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+		String query="";
+	    try
+		{
+	        conn = ds.getConnection();
+			s = conn.createStatement();
+			query = "DELETE FROM lignebudgetaire WHERE id='" + getId() + "'";
+			res = s.executeQuery(query);
+			
+		}
+	    catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}  
     }
 
 /**
@@ -169,40 +257,50 @@ public class LigneBudgetaire extends ObjetPersistant {
  * @return Une collection de tous les objets
  * @throws Si une erreur survient pendant la transaction
  */
-    public static java.util.ArrayList retournerTous() throws Exception{
-    	String req;
-    	Statement s;
-    	ResultSet rs;
-    	ArrayList ret = new ArrayList();
-    	
-    	req = "SELECT * FROM \"LIGNE_BUDGETAIRE\" ";
-    	req+= ";";
-    	
-    	
-    	try{
-    		Class.forName("org.postgresql.Driver");
-    		conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/gid","postgres","postgres");
-    		conn.setAutoCommit(false);	
-    		
-    		s = conn.createStatement();
-    		
-    		rs = s.executeQuery(req);
-    		
-    		while (rs.next()){
-    			
-    			LigneBudgetaire lb = new LigneBudgetaire();
-    			lb.id = rs.getInt("ID");
-    			lb.libelle = rs.getString("LIBELLE");
-    			
-    			ret.add(lb);
-    		}
-    		
-    		conn.commit();
-    	}
-    	catch(ClassNotFoundException cnfe){cnfe.printStackTrace();}
-    	catch(SQLException sqle){sqle.printStackTrace();}
-    
-    	return ret;
+    public final java.util.Vector retournerTous() throws Exception{
+        Vector tous = new Vector();
+    	Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+	    try
+		{
+	        conn = ds.getConnection();
+			s = conn.createStatement();
+			res = s.executeQuery("SELECT * FROM ligne_budgetaire ORDER BY libelle");
+			while(res.next())
+			{
+			    LigneBudgetaire lb = new LigneBudgetaire();
+			    lb.setId(res.getInt("id"));
+			    lb.setLibelle(res.getString("libelle"));
+			    tous.addElement(lb);
+			}
+		}
+	    catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}  
+		return tous;
     }
 
  }
