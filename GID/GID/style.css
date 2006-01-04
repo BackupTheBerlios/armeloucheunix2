@@ -1,0 +1,145 @@
+/* CSS Document */
+
+ul, li { /* utilisation de liste pour le menu */
+list-style-type: none;  /* suppression des puces de liste */
+margin:0;
+padding:0;
+}
+
+ul {
+position: absolute; /* positionnement pour IE5 et IE5.5 */
+left: 0px;
+top: 0px;
+height: 480px;
+width: 177px;
+text-align: center;
+}
+
+li {
+display: inline; /* correction pour IE5 et IE5.5 */
+}
+
+li a   { font-size: 12px; line-height: 20px; font-family: Arial, Helvetica, sans-serif; text-decoration: none; width: 177px; height: 40px; display: block }
+
+li a:hover {
+color:#FF0000;
+ no-repeat left top;
+}
+
+
+table {
+	background-attachment: scroll;
+	background-repeat: repeat-y;
+	background-position: left top;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-style: normal;
+	color:#FF0000;
+	border-collapse: collapse;
+	text-align:center;
+}
+
+.top {
+	background-image: url(img/branche.gif);
+	height: 80px;
+	width: 148px;
+	left: 177px;
+	top: 0px;
+	background-attachment: scroll;
+	background-repeat: no-repeat;
+	background-position: left top;
+	position: absolute;
+
+
+}
+.menu {
+	height: 480px;
+	width: 177px;
+	left: 0px;
+	top: 0px;
+}
+body {
+	background-attachment: scroll;
+	background-position: left top;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
+.centre {
+	width: 800px;
+	position: absolute;
+	left: 180px;
+	top: 90px;
+	text-align: justify;
+}
+a:hover {
+	color:#069;
+}
+a:link {
+	color: #663300;
+}
+a {
+	color: #663300;
+}
+.solde, .nom { 
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 16px;
+	color: #000000;
+	margin-left:40px;
+	margin-bottom:40px;}
+
+td{
+height:20px;
+text-align:center;
+border-width:1px;
+border-style:solid;
+border-color:#000000;
+}
+.operation th, .a_traiter th {
+background-color:#999999;
+text-align:center;
+color:#000000;
+border-width:1px;
+border-style:solid;
+border-color:#000000;
+}
+.date_operation, .debit, .credit, .montant{
+width:100px;
+}
+.libelle{
+width:350px;
+}
+.partenaires{
+width:250px;
+}
+.etat{
+font-family:Arial, Helvetica, sans-serif;
+font-size: 16px; background-color:transparent; position: absolute; top: 0px; left: 605px; width: 385px; 
+}
+.valider{ color: #cff; font-size: 9px; background-color: #069; vertical-align: middle; border: solid 1px #cff}
+.ligne_budgetaire{font-size:16px;color:#000000;text-align:left;position:absolute; top:103px;left:450px;}
+.ajout{position:absolute; top:380px;left:580px; color: #cff; font-size: 9px; background-color: #069; vertical-align: middle; border: solid 1px #cff}
+.conso{margin-top:40px;height:140px;}
+.field_part{margin-top:40px;}
+.partenaire tr{height:40px;}
+.partenaire td{border-width:0px;width:300px;text-align:left;}
+.partenaire table{font-size:16px;color:#000000;text-align:left;}
+.partenaire th {color:#000000;width:200px;}
+.consommables tr{height:40px;}
+.consommables td{border-width:0px;width:300px;text-align:left;}
+.consommables th{color:#000000;width:200px;text-align:left;}
+.consommables table{font-size:16px;color:#000000;text-align:left;}
+.quantite tr{height:40px;}
+.quantite table{font-size:16px;color:#000000;text-align:left;position:absolute; top:284px;left:480px;}
+.quantite td{border-width:0px;width:100px;text-align:left;}
+.quantite th{color:#000000;width:100px;text-align:left;}
+.etatSelect{color:#FF0000;}
+.chapitre{font-size:16px;color:#000000;text-align:left;position:absolute; top:145px;left:450px;}
+.message{font-size: 16px;}
+.identifier   { font-size: 9px; background-color:red; position: absolute; top: 0px; /*left: 205px; width: 385px; */height: 65px }
+.champ    { color: #069; font-size: 10px; vertical-align: middle; border: solid 1px #069; width: 100px }
+.champ2   { color: #cff; font-size: 9px; background-color: #069; vertical-align: middle; border: solid 1px #cff }
+.site	   { color: #036; background-color: #cff; border: solid 0px #0c0; width: 530px; filter:alpha(opacity=50);
+   -moz-opacity:0.5;
+   -khtml-opacity: 0.5;
+   opacity: 0.5; }
+.date  { color: #006699; font-size: 10px; text-indent: 20px }
