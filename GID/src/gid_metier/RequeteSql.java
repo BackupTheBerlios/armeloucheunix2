@@ -86,9 +86,7 @@ public class RequeteSql extends HttpServlet
 				sousOrdonnateur=(gid_metier.SousOrdonnateur)Beans.instantiate(this.getClass().getClassLoader(), "gid_metier.SousOrdonnateur" );
 				pageContext.setAttribute("sousOrdonnateur", sousOrdonnateur, PageContext.SESSION_SCOPE );
 	        }
-	        
-			titre=(String)Beans.instantiate(this.getClass().getClassLoader(), "java.lang.String" );
-			pageContext.setAttribute("titre", titre, PageContext.SESSION_SCOPE );
+	       
 	        /*comptabilite = (Comptabilite)pageContext.getAttribute("comptabilite",PageContext.SESSION_SCOPE);
 			if (comptabilite == null)
 			{
@@ -271,7 +269,7 @@ public class RequeteSql extends HttpServlet
 			    {
 			    	ordonnances = tr_tp.getArchives();
 			    }
-			    titre = "Archives des ordonnances de délégation";
+			    titre = "Archives des ordonnances de delegation";
 			    pageContext.setAttribute("titre", titre, PageContext.SESSION_SCOPE);
 			    pageContext.setAttribute("ordonnances", ordonnances, PageContext.SESSION_SCOPE );
 			    gotoPage("/tableau_de_bord.jsp",request,response);
@@ -320,7 +318,7 @@ public class RequeteSql extends HttpServlet
 			    {
 			    	ordonnances = tr_tp.getEnCours();
 			    }
-			    titre = "Ordonnances de délégation en cours de traitement";
+			    titre = "Ordonnances de delegation en cours de traitement";
 			    pageContext.setAttribute("titre", titre, PageContext.SESSION_SCOPE);
 			    pageContext.setAttribute("ordonnances", ordonnances, PageContext.SESSION_SCOPE );
 			    gotoPage("/tableau_de_bord.jsp",request,response);
@@ -369,7 +367,7 @@ public class RequeteSql extends HttpServlet
 			    {
 			    	ordonnances = tr_tp.getATraiters();
 			    }
-			    titre = "Ordonnances de délégation à traiter";
+			    titre = "Ordonnances de delegation a traiter";
 			    pageContext.setAttribute("titre", titre, PageContext.SESSION_SCOPE);
 			    pageContext.setAttribute("ordonnances", ordonnances, PageContext.SESSION_SCOPE );
 			    gotoPage("/tableau_de_bord.jsp",request,response);
@@ -380,12 +378,32 @@ public class RequeteSql extends HttpServlet
 			    ordo = (Vector)pageContext.getAttribute("ordonnances",PageContext.SESSION_SCOPE);
 			    
 			    int place = new Integer(request.getParameter("place")).intValue();
-			    if(ordon.size()>place)
+			    if(ordo.size()>place)
 			    {
 			        ordon =(OrdonnanceDelegation)ordo.elementAt(place);
 			    }
-			    
+			    try
+			    {
+				    titre = (java.lang.String)pageContext.getAttribute("titre",PageContext.SESSION_SCOPE);
+			        
+			        
+			    }
+			    catch( Exception e )
+				{
+					// Il n'y a rien de plus que l'on puisse faire
+					if (response.isCommitted())
+						return;
+			
+					// Affiche le message de l'exception sur la page d'erreurs
+					if (e.getMessage() != null ) {
+						response.sendRedirect("error.jsp?error=" + e.getMessage());
+					}
+					else {
+						response.sendRedirect("error.jsp");
+					}
+				}
 			    pageContext.setAttribute("ordon", ordon, PageContext.SESSION_SCOPE );
+			    pageContext.setAttribute("titre", titre, PageContext.SESSION_SCOPE );
 				gotoPage("/detail_ordonnance.jsp",request,response);
 			}
 			if (action.equalsIgnoreCase("process_ordonnance"))
@@ -442,12 +460,7 @@ public class RequeteSql extends HttpServlet
 			    	
 			    	    try
 			    	    {
-				    	    System.out.println(ordon.getRefVisaCCED());
-			    		    System.out.println(ordon.getDateVisaCCED());
-			    		    System.out.println(ordon.getId());
-			    		    System.out.println(ordon.getMontant());
-			    		    System.out.println(ordon.getLibelle());
-			    		    System.out.println(ordon.getEtat());
+				    	    
 			    		    cced.viser(ordon);
 				    	    cced.transmettreOrdonnance(ordon, acteur);
 				    	    cced.prendreOrdonnanceEnCharge(ordon);

@@ -4,7 +4,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>Document sans titre</title>
+<title>Détail de l'ordonnance</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </head>
 
@@ -37,7 +37,26 @@
 <div class="message">
 Vous avez un message GID : 
 </div>
-<%@ include file="messageGID.jsp" %>
+<% 
+	if(titre.equalsIgnoreCase("Ordonnances de delegation a traiter"))
+	{
+%>
+ 		<%@ include file="messageGID.jsp" %>
+<%
+	}
+	else if (titre.equalsIgnoreCase("Ordonnances de delegation en cours de traitement"))
+	{
+%>
+
+<%
+	}
+	else
+	{
+%>
+		La procédure est terminée.
+<%
+	}
+%>
 </blockquote>
 </div>
 
