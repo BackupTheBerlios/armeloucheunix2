@@ -377,51 +377,13 @@ public class RequeteSql extends HttpServlet
 			
 			if (action.equalsIgnoreCase("detailOrdonnance"))
 			{
-			    try
-			    {
-			        ordon = (OrdonnanceDelegation)Beans.instantiate(this.getClass().getClassLoader(), "gid_metier.OrdonnanceDelegation" );
-			    }
-			    catch( Exception e )
-				{
-					// Il n'y a rien de plus que l'on puisse faire
-					if (response.isCommitted())
-						return;
-			
-					// Affiche le message de l'exception sur la page d'erreurs
-					if (e.getMessage() != null ) {
-						response.sendRedirect("error.jsp?error=" + e.getMessage());
-					}
-					else {
-						response.sendRedirect("error.jsp");
-					}
-				}  
-			    if (cced.identifie())
-			    {
-			    	ordo = cced.getATraiters();
-			    }
-			     if(cped.identifie())
-			    {
-			    	ordo = cped.getATraiters();
-			    }
-			    else if(ordonnateur.identifie())
-			    {
-			    	ordo = ordonnateur.getATraiters();
-			    }
-			    else if(sousOrdonnateur.identifie())
-			    {
-			    	ordo = sousOrdonnateur.getATraiters();
-			    }
-			    else if(tg.identifie())
-			    {
-			    	ordo = tg.getATraiters();
-			    }
-			    else if(tr_tp.identifie())
-			    {
-			    	ordo = tr_tp.getATraiters();
-			    }
-			    int place = new Integer(request.getParameter("place")).intValue();
-			    ordon =(OrdonnanceDelegation)ordo.elementAt(place);
+			    ordo = (Vector)pageContext.getAttribute("ordonnances",PageContext.SESSION_SCOPE);
 			    
+			    int place = new Integer(request.getParameter("place")).intValue();
+			    if(ordon.size()>place)
+			    {
+			        ordon =(OrdonnanceDelegation)ordo.elementAt(place);
+			    }
 			    
 			    pageContext.setAttribute("ordon", ordon, PageContext.SESSION_SCOPE );
 				gotoPage("/detail_ordonnance.jsp",request,response);
