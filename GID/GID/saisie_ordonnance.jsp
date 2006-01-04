@@ -335,14 +335,18 @@ Nom de l'ordonnance : <input type="text" maxlength="30" name="nom_ordonnance" va
 								}
 								else
 								{
-									lbc.chargeParId(((LigneBudgetaire)ligne_budgetaire.retournerTous().elementAt(0)).getId());
-									chapitres = lbc.retournerChapitres();
-									for(int i=0; i<chapitres.size(); i++)
+									Vector line = ligne_budgetaire.retournerTous();
+									if(line !=null)
 									{
-										Chapitre c = (Chapitre)chapitres.elementAt(i);
+										lbc.chargeParId(((LigneBudgetaire)line.elementAt(0)).getId());
+										chapitres = lbc.retournerChapitres();
+										for(int i=0; i<chapitres.size(); i++)
+										{
+											Chapitre c = (Chapitre)chapitres.elementAt(i);
 							%>
 							<option value="<%=c.getId() %>"><%=c.getLibelle()%></option>
 							<%
+										}
 									}
 								}
 							%>
