@@ -20,6 +20,7 @@
 <div id="menu">
 	<ul>
 		<li><a href="/GID/GID?action=ordonnance">Voir les ordonnances a traiter</a></li>
+		<li><a href="/GID/GID?action=encours">Voir les ordonnances en cours de traitement</a></li>
 		<li><a href="/GID/GID?action=archives">Voir les ordonnances archivées</a></li>
 	  	<li><a href="/GID/comptabilite.jsp">Voir la comptabilite</a></li>
 	  	
