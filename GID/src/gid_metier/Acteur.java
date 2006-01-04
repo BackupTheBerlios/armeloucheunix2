@@ -41,6 +41,8 @@ public abstract class Acteur extends ObjetPersistant {
     protected java.util.Vector aTraiter = new java.util.Vector();
     
     protected java.util.Vector ordonnances_archives = new java.util.Vector();
+    
+    protected java.util.Vector ordonnances_encours = new java.util.Vector();
 /**
  * <p>Represente la comptabilit&eacute; personnelle de l'acteur.</p>
  * 
@@ -190,6 +192,19 @@ public abstract class Acteur extends ObjetPersistant {
     /** @poseidon-generated */
     public void removeArchives(gid_metier.OrdonnanceDelegation ordonnanceDelegation) {
         this.ordonnances_archives.remove(ordonnanceDelegation);
+    }
+    
+    /** @poseidon-generated */
+    public java.util.Vector getEnCours() {
+        return ordonnances_encours;
+    }
+    /** @poseidon-generated */
+    public void addEnCours(gid_metier.OrdonnanceDelegation ordonnanceDelegation) {
+        if (! this.ordonnances_encours.contains(ordonnanceDelegation)) this.ordonnances_encours.addElement(ordonnanceDelegation);
+    }
+    /** @poseidon-generated */
+    public void removeEnCours(gid_metier.OrdonnanceDelegation ordonnanceDelegation) {
+        this.ordonnances_encours.remove(ordonnanceDelegation);
     }
     
     /** @poseidon-generated */

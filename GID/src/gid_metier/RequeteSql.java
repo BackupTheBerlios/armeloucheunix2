@@ -229,7 +229,6 @@ public class RequeteSql extends HttpServlet
 			}
 			if (action.equalsIgnoreCase("archives"))
 			{
-			    
 			    try
 			    {
 			        ordonnances = (java.util.Vector)Beans.instantiate(this.getClass().getClassLoader(), "java.util.Vector" );
@@ -273,6 +272,55 @@ public class RequeteSql extends HttpServlet
 			    	ordonnances = tr_tp.getArchives();
 			    }
 			    titre = "Archives des ordonnances de délégation";
+			    pageContext.setAttribute("titre", titre, PageContext.SESSION_SCOPE);
+			    pageContext.setAttribute("ordonnances", ordonnances, PageContext.SESSION_SCOPE );
+			    gotoPage("/tableau_de_bord.jsp",request,response);
+			}
+			if (action.equalsIgnoreCase("encours"))
+			{
+			    try
+			    {
+			        ordonnances = (java.util.Vector)Beans.instantiate(this.getClass().getClassLoader(), "java.util.Vector" );
+			    }
+			    catch(Exception e)
+			    {
+//			      Il n'y a rien de plus que l'on puisse faire
+					if (response.isCommitted())
+						return;
+			
+					// Affiche le message de l'exception sur la page d'erreurs
+					if (e.getMessage() != null ) {
+						response.sendRedirect("error.jsp?error=" + e.getMessage());
+					}
+					else {
+						response.sendRedirect("error.jsp");
+					}
+			    }
+			    if (cced.identifie())
+			    {
+			    	ordonnances = cced.getEnCours();
+			    }
+			    else if(cped.identifie())
+			    {
+			    	ordonnances = cped.getEnCours();
+			    }
+			    else if(ordonnateur.identifie())
+			    {
+			    	ordonnances = ordonnateur.getEnCours();
+			    }
+			    else if(sousOrdonnateur.identifie())
+			    {
+			    	ordonnances = sousOrdonnateur.getEnCours();
+			    }
+			    else if(tg.identifie())
+			    {
+			    	ordonnances = tg.getEnCours();
+			    }
+			    else if(tr_tp.identifie())
+			    {
+			    	ordonnances = tr_tp.getEnCours();
+			    }
+			    titre = "Ordonnances de délégation en cours de traitement";
 			    pageContext.setAttribute("titre", titre, PageContext.SESSION_SCOPE);
 			    pageContext.setAttribute("ordonnances", ordonnances, PageContext.SESSION_SCOPE );
 			    gotoPage("/tableau_de_bord.jsp",request,response);
