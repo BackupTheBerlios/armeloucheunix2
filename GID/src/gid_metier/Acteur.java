@@ -39,10 +39,13 @@ public abstract class Acteur extends ObjetPersistant {
  * @poseidon-type gid_metier.OrdonnanceDelegation
  */
     protected java.util.Vector aTraiter = new java.util.Vector();
+    
+    protected java.util.Vector ordonnances_archives = new java.util.Vector();
 /**
  * <p>Represente la comptabilit&eacute; personnelle de l'acteur.</p>
  * 
  */
+   
     private gid_metier.Comptabilite comptaPerso;
 
 /**
@@ -169,13 +172,26 @@ public abstract class Acteur extends ObjetPersistant {
     }
     /** @poseidon-generated */
     public void addATraiter(gid_metier.OrdonnanceDelegation ordonnanceDelegation) {
-        /*if (! this.aTraiter.contains(ordonnanceDelegation)) */this.aTraiter.addElement(ordonnanceDelegation);
+        if (! this.aTraiter.contains(ordonnanceDelegation)) this.aTraiter.addElement(ordonnanceDelegation);
     }
     /** @poseidon-generated */
     public void removeATraiter(gid_metier.OrdonnanceDelegation ordonnanceDelegation) {
         this.aTraiter.remove(ordonnanceDelegation);
     }
 
+    /** @poseidon-generated */
+    public java.util.Vector getArchives() {
+        return ordonnances_archives;
+    }
+    /** @poseidon-generated */
+    public void addArchives(gid_metier.OrdonnanceDelegation ordonnanceDelegation) {
+        if (! this.ordonnances_archives.contains(ordonnanceDelegation)) this.ordonnances_archives.addElement(ordonnanceDelegation);
+    }
+    /** @poseidon-generated */
+    public void removeArchives(gid_metier.OrdonnanceDelegation ordonnanceDelegation) {
+        this.ordonnances_archives.remove(ordonnanceDelegation);
+    }
+    
     /** @poseidon-generated */
     public gid_metier.Comptabilite getComptaPerso() {
         return comptaPerso;
