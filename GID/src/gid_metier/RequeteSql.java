@@ -224,6 +224,54 @@ public class RequeteSql extends HttpServlet
 				    gotoPage("/header.jsp",request,response);
 				}
 			}
+			if (action.equalsIgnoreCase("archives"))
+			{
+			    System.out.println("tiot");
+			    try
+			    {
+			        ordonnances = (java.util.Vector)Beans.instantiate(this.getClass().getClassLoader(), "java.util.Vector" );
+			    }
+			    catch(Exception e)
+			    {
+//			      Il n'y a rien de plus que l'on puisse faire
+					if (response.isCommitted())
+						return;
+			
+					// Affiche le message de l'exception sur la page d'erreurs
+					if (e.getMessage() != null ) {
+						response.sendRedirect("error.jsp?error=" + e.getMessage());
+					}
+					else {
+						response.sendRedirect("error.jsp");
+					}
+			    }
+			    if (cced.identifie())
+			    {
+			    	ordonnances = cced.getArchives();
+			    }
+			    else if(cped.identifie())
+			    {
+			    	ordonnances = cped.getArchives();
+			    }
+			    else if(ordonnateur.identifie())
+			    {
+			    	ordonnances = ordonnateur.getArchives();
+			    }
+			    else if(sousOrdonnateur.identifie())
+			    {
+			    	ordonnances = sousOrdonnateur.getArchives();
+			    }
+			    else if(tg.identifie())
+			    {
+			    	ordonnances = tg.getArchives();
+			    }
+			    else if(tr_tp.identifie())
+			    {
+			    	ordonnances = tr_tp.getArchives();
+			    }
+			    pageContext.setAttribute("ordonnances", ordonnances, PageContext.SESSION_SCOPE );
+			    gotoPage("/tableau_de_bord.jsp",request,response);
+			}
 			if (action.equalsIgnoreCase("ordonnance"))
 			{
 			    try
@@ -271,6 +319,7 @@ public class RequeteSql extends HttpServlet
 			    pageContext.setAttribute("ordonnances", ordonnances, PageContext.SESSION_SCOPE );
 			    gotoPage("/tableau_de_bord.jsp",request,response);
 			}
+			
 			if (action.equalsIgnoreCase("detailOrdonnance"))
 			{
 			    try
