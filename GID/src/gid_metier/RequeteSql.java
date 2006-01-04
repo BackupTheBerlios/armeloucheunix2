@@ -40,6 +40,7 @@ public class RequeteSql extends HttpServlet
 		java.util.Vector ordo = null;
 	    java.util.Vector ordonnances=null;
 		gid_metier.OrdonnanceDelegation ordon = null;
+		String titre=null;
 
 		int id_acteur=0;
 		
@@ -85,8 +86,10 @@ public class RequeteSql extends HttpServlet
 				sousOrdonnateur=(gid_metier.SousOrdonnateur)Beans.instantiate(this.getClass().getClassLoader(), "gid_metier.SousOrdonnateur" );
 				pageContext.setAttribute("sousOrdonnateur", sousOrdonnateur, PageContext.SESSION_SCOPE );
 	        }
-				
-			/*comptabilite = (Comptabilite)pageContext.getAttribute("comptabilite",PageContext.SESSION_SCOPE);
+	        
+			titre=(String)Beans.instantiate(this.getClass().getClassLoader(), "java.lang.String" );
+			pageContext.setAttribute("titre", titre, PageContext.SESSION_SCOPE );
+	        /*comptabilite = (Comptabilite)pageContext.getAttribute("comptabilite",PageContext.SESSION_SCOPE);
 			if (comptabilite == null)
 			{
 				comptabilite =(gid_metier.Comptabilite)Beans.instantiate(this.getClass().getClassLoader(), "gid_metier.Comptabilite" );
@@ -226,7 +229,7 @@ public class RequeteSql extends HttpServlet
 			}
 			if (action.equalsIgnoreCase("archives"))
 			{
-			    System.out.println("tiot");
+			    
 			    try
 			    {
 			        ordonnances = (java.util.Vector)Beans.instantiate(this.getClass().getClassLoader(), "java.util.Vector" );
@@ -269,6 +272,8 @@ public class RequeteSql extends HttpServlet
 			    {
 			    	ordonnances = tr_tp.getArchives();
 			    }
+			    titre = "Archives des ordonnances de délégation";
+			    pageContext.setAttribute("titre", titre, PageContext.SESSION_SCOPE);
 			    pageContext.setAttribute("ordonnances", ordonnances, PageContext.SESSION_SCOPE );
 			    gotoPage("/tableau_de_bord.jsp",request,response);
 			}
@@ -316,6 +321,8 @@ public class RequeteSql extends HttpServlet
 			    {
 			    	ordonnances = tr_tp.getATraiters();
 			    }
+			    titre = "Ordonnances de délégation à traiter";
+			    pageContext.setAttribute("titre", titre, PageContext.SESSION_SCOPE);
 			    pageContext.setAttribute("ordonnances", ordonnances, PageContext.SESSION_SCOPE );
 			    gotoPage("/tableau_de_bord.jsp",request,response);
 			}
@@ -366,7 +373,8 @@ public class RequeteSql extends HttpServlet
 			    }
 			    int place = new Integer(request.getParameter("place")).intValue();
 			    ordon =(OrdonnanceDelegation)ordo.elementAt(place);
-			  
+			    
+			    
 			    pageContext.setAttribute("ordon", ordon, PageContext.SESSION_SCOPE );
 				gotoPage("/detail_ordonnance.jsp",request,response);
 			}

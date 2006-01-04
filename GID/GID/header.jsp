@@ -13,12 +13,16 @@
 <jsp:useBean id="tr_tp" class="gid_metier.TR_TP" scope="session" />
 <jsp:useBean id="ordon" class="gid_metier.OrdonnanceDelegation" scope="session" />
 <jsp:useBean id="ordonnances" class="Vector" scope="session" />
+<jsp:useBean id="titre" class="java.lang.String" scope="session" />
+
 
 <link href="/GID/style.css" rel="stylesheet" type="text/css">
 <div id="menu">
 	<ul>
 		<li><a href="/GID/GID?action=ordonnance">Voir les ordonnances a traiter</a></li>
+		<li><a href="/GID/GID?action=archives">Voir les ordonnances archivées</a></li>
 	  	<li><a href="/GID/comptabilite.jsp">Voir la comptabilite</a></li>
+	  	
 <%if(ordonnateur.identifie()){%>
 		<li><a href="saisie_ordonnance.jsp">Saisir une nouvelle ordonnance de délégation</a></li>
 		<li><a href="retirer_ordonnance.jsp">Retirer une ordonnance de délégation</a></li>
@@ -51,10 +55,5 @@
 
 <%
 	}
-	/*Vector tous = chapitre.retournerTous();
-	for (int i=0; i<tous.size();  i++)
-	{
-		out.print(((gid_metier.Chapitre)tous.elementAt(i)).getId());
-	}*/
 %>
 </div>

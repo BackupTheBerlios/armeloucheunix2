@@ -417,7 +417,7 @@ Nom de l'ordonnance : <input type="text" maxlength="30" name="nom_ordonnance" va
 						<input type="button" value="Ajouter" class="ajout" onclick="ajout()">
 
 					</FIELDSET>
-				<input type="submit" value="Valider la saisie">
+				<input class="valider" type="submit" value="Valider la saisie">
 
 				<%=hidden%>
 				</form>

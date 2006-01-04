@@ -4,13 +4,15 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>Document sans titre</title>
+
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </head>
 
 <body>
 <%@ include file="header.jsp" %>
+<title><%=titre %></title>
 <div class="centre">
+<h2 align="center"><%=titre%></h2>
 <blockquote>
 <table class="a_traiter">
 	<tr>
