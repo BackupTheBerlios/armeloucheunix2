@@ -712,7 +712,7 @@ public class TR_TP extends Acteur {
 			 {
 			    conn2 = ds.getConnection();
 				s2 = conn2.createStatement();
-				res2 = s2.executeQuery("SELECT ordonnance_id FROM a_traiter WHERE a_traiter.acteur_id='" + getId() + "'");
+				res2 = s2.executeQuery("SELECT ordonnance_id FROM a_traiter WHERE a_traiter.acteur_id='" + getId() + "' ORDER BY date DESC");
 				while(res2.next())
 				{
 				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
@@ -757,7 +757,7 @@ public class TR_TP extends Acteur {
 			{
 			    conn2 = ds.getConnection();
 				s2 = conn2.createStatement();
-				String q = "SELECT id FROM ordonnance WHERE etat='4' AND delegataire_id IN (SELECT id FROM sousordonnateur WHERE tr_tp_id='" + getId() + "')";
+				String q = "SELECT id FROM ordonnance WHERE etat='4' AND delegataire_id IN (SELECT id FROM sousordonnateur WHERE tr_tp_id='" + getId() + "') ORDER BY date DESC";
 				System.out.println(q);
 				res2 = s2.executeQuery(q);
 				
@@ -806,7 +806,7 @@ public class TR_TP extends Acteur {
 			{
 			    conn2 = ds.getConnection();
 				s2 = conn2.createStatement();
-				String q = "SELECT id FROM ordonnance WHERE etat!='4' AND delegataire_id IN (SELECT id FROM sousordonnateur WHERE tr_tp_id='" + getId() + "') AND id NOT IN (SELECT ordonnance_id FROM a_traiter where acteur_id='" + getId() +"')";
+				String q = "SELECT id FROM ordonnance WHERE etat='3' AND delegataire_id IN (SELECT id FROM sousordonnateur WHERE tr_tp_id='" + getId() + "') AND id NOT IN (SELECT ordonnance_id FROM a_traiter where acteur_id='" + getId() +"') ORDER BY date DESC";
 				System.out.println(q);
 				res2 = s2.executeQuery(q);
 				

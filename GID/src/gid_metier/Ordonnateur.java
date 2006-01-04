@@ -79,7 +79,7 @@ public class Ordonnateur extends Acteur {
 			 {
 			    conn2 = ds.getConnection();
 				s2 = conn2.createStatement();
-				res2 = s2.executeQuery("SELECT ordonnance_id FROM a_traiter WHERE a_traiter.acteur_id='" + getId() + "'");
+				res2 = s2.executeQuery("SELECT ordonnance_id FROM a_traiter WHERE a_traiter.acteur_id='" + getId() + "' ORDER BY date desc");
 				while(res2.next())
 				{
 				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
@@ -974,7 +974,7 @@ public class Ordonnateur extends Acteur {
 		{
 		    conn2 = ds.getConnection();
 			s2 = conn2.createStatement();
-			String q = "SELECT id FROM ordonnance WHERE etat!='4' AND initiateur_id='" + getId() + "' AND id NOT IN (SELECT ordonnance_id FROM a_traiter where acteur_id='" + getId() +"')";
+			String q = "SELECT id FROM ordonnance WHERE etat!='4' AND initiateur_id='" + getId() + "' AND id NOT IN (SELECT ordonnance_id FROM a_traiter where acteur_id='" + getId() +"') ORDER BY date desc";
 			System.out.println(q);
 			res2 = s2.executeQuery(q);
 			
@@ -1030,6 +1030,55 @@ public class Ordonnateur extends Acteur {
  */
     public void saisirOrdonnanceDelegation(gid_metier.OrdonnanceDelegation ordonnance) throws Exception {        
         ordonnance.sauver();
+        try
+		{
+		    conn2 = ds.getConnection();
+			s2 = conn2.createStatement();
+			String q = "SELECT id FROM ordonnance WHERE etat!='4' AND initiateur_id='" + getId() + "' AND id NOT IN (SELECT ordonnance_id FROM a_traiter where acteur_id='" + getId() +"') ORDER BY date desc";
+			System.out.println(q);
+			res2 = s2.executeQuery(q);
+			
+			while(res2.next())
+			{
+			    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
+			    try
+			    {
+			        ordon.chargeParId(res2.getInt("id"));
+			    }
+			    catch(Exception e)
+			    {
+			        System.out.println(e.getMessage());
+			    }
+				addEnCours(ordon);
+				System.out.println(ordon.getId());
+			}
+		}
+	    catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res2.close();
+				} catch (SQLException e) {}
+				res2 = null;
+			}
+			if (s2 != null) {
+				try {
+					s2.close();
+				} catch (SQLException e) {}
+				s2 = null;
+			}
+			if (conn2 != null) {
+				try {
+					conn2.close();
+				} catch (SQLException e) {}
+				conn2 = null;
+			}
+		}
     } 
 
 /**

@@ -759,7 +759,7 @@ public class TG extends Acteur {
 			 {
 			    conn2 = ds.getConnection();
 				s2 = conn2.createStatement();
-				res2 = s2.executeQuery("SELECT ordonnance_id FROM a_traiter WHERE a_traiter.acteur_id='" + getId() + "'");
+				res2 = s2.executeQuery("SELECT ordonnance_id FROM a_traiter WHERE a_traiter.acteur_id='" + getId() + "' ORDER BY date DESC");
 				while(res2.next())
 				{
 				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
@@ -831,7 +831,7 @@ public class TG extends Acteur {
 		{
 		    conn2 = ds.getConnection();
 			s2 = conn2.createStatement();
-			String q = "SELECT id FROM ordonnance WHERE etat='4' AND comptable_id='" + getId() + "' AND id NOT IN (SELECT ordonnance_id FROM a_traiter)";
+			String q = "SELECT id FROM ordonnance WHERE etat='4' AND comptable_id='" + getId() + "' AND id NOT IN (SELECT ordonnance_id FROM a_traiter) ORDER BY date DESC";
 			System.out.println(q);
 			res2 = s2.executeQuery(q);
 			
@@ -880,7 +880,7 @@ public class TG extends Acteur {
 		{
 		    conn2 = ds.getConnection();
 			s2 = conn2.createStatement();
-			String q = "SELECT id FROM ordonnance WHERE etat!='4' AND comptable_id='" + getId() + "' AND id NOT IN (SELECT ordonnance_id FROM a_traiter where acteur_id='" + getId() +"')";
+			String q = "SELECT id FROM ordonnance WHERE etat!='4' AND comptable_id='" + getId() + "' AND id NOT IN (SELECT ordonnance_id FROM a_traiter where acteur_id='" + getId() +"') ORDER BY date DESC";
 			System.out.println(q);
 			res2 = s2.executeQuery(q);
 			
