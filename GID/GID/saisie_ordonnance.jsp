@@ -336,7 +336,7 @@ Nom de l'ordonnance : <input type="text" maxlength="30" name="nom_ordonnance" va
 								else
 								{
 									Vector line = ligne_budgetaire.retournerTous();
-									if(line !=null)
+									if(line.size()>0)
 									{
 										lbc.chargeParId(((LigneBudgetaire)line.elementAt(0)).getId());
 										chapitres = lbc.retournerChapitres();
