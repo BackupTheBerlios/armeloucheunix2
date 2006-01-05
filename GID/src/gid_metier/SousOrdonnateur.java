@@ -796,7 +796,8 @@ public class SousOrdonnateur extends Acteur {
 			 {
 			    conn2 = ds.getConnection();
 				s2 = conn2.createStatement();
-				String query = "SELECT ordonnance_id FROM a_traiter WHERE a_traiter.acteur_id='" + getId() + "' AND ordonnance_id NOT IN(SELECT ordonnance_id FROM a_traiter, ordonnance WHERE ordonnance_id=id AND a_traiter.acteur_id != '" + getId() + "' AND (a_traiter.acteur_id IN (SELECT initiateur_id FROM ordonnance) AND etat='3') OR (etat='2' AND a_traiter.acteur_id IN (SELECT comptable_id FROM ordonnance)))";
+				String query = "SELECT ordonnance_id FROM a_traiter WHERE a_traiter.acteur_id='" + getId() + "' AND ordonnance_id NOT IN(SELECT ordonnance_id FROM a_traiter, ordonnance WHERE ordonnance_id=id AND a_traiter.acteur_id != '" + getId() + "' AND (etat='2' AND a_traiter.acteur_id IN (SELECT comptable_id FROM ordonnance)))";
+				//String query = "SELECT ordonnance_id FROM a_traiter WHERE a_traiter.acteur_id='" + getId() + "' AND ordonnance_id NOT IN(SELECT ordonnance_id FROM a_traiter, ordonnance WHERE ordonnance_id=id AND a_traiter.acteur_id != '" + getId() + "' AND (a_traiter.acteur_id IN (SELECT initiateur_id FROM ordonnance) AND etat='3') OR (etat='2' AND a_traiter.acteur_id IN (SELECT comptable_id FROM ordonnance)))";
 				res2 = s2.executeQuery(query);
 				while(res2.next())
 				{
@@ -975,7 +976,8 @@ public class SousOrdonnateur extends Acteur {
 		{
 	        conn = ds.getConnection();
 			s = conn.createStatement();
-			String q = "SELECT ordonnance_id FROM action WHERE ordonnance_id IN (SELECT ordonnance_id FROM action WHERE type='1' AND participant_id='" + getCped().getId() + "')";
+			String q ="SELECT DISTINCT ordonnance_id FROM action WHERE ordonnance_id='" + ordon.getId() + "' AND ordonnance_id IN (SELECT ordonnance_id FROM action WHERE type='1' AND participant_id='" + getCped().getId() + "')";
+			//String q = "SELECT ordonnance_id FROM action WHERE ordonnance_id IN (SELECT ordonnance_id FROM action WHERE type='1' AND participant_id='" + getCped().getId() + "')";
 			res = s.executeQuery(q);
 			if (res.next())
 			{

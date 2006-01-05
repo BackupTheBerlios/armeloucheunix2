@@ -573,7 +573,7 @@ public class RequeteSql extends HttpServlet
 			    	}
 			        try
 			    	{
-			            if(sousOrdonnateur.verifOrdoEnvoye(ordon))
+			            if(!sousOrdonnateur.verifOrdoEnvoye(ordon))
 			            {
 			                sousOrdonnateur.transmettreOrdonnance(ordon, sousOrdonnateur.getCped());
 			            }

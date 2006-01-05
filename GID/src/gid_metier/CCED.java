@@ -300,7 +300,7 @@ public class CCED extends Acteur {
 			}
 		}
     }
-
+ 
 /**
  * <p>Enregistre l'objet dans le SGBD.</p>
  * <p>Cette operation correspond a une transaction</p>
