@@ -438,12 +438,17 @@ public class OrdonnanceDelegation extends ObjetPersistant {
 			    setDateVisaTG(res.getDate("date_visatg"));
 			    
 			    Ordonnateur initiateur = new Ordonnateur();
+			    initiateur.setId(res.getInt("initiateur_id"));
 			    initiateur.setNom(res.getString("initiateur_nom"));
 			    initiateur.setPrenom(res.getString("initiateur_prenom"));
+			    
 			    SousOrdonnateur delegataire = new SousOrdonnateur();
+			    delegataire.setId(res.getInt("delegataire_id"));
 			    delegataire.setNom(res.getString("delegataire_nom"));
 			    delegataire.setPrenom(res.getString("delegataire_prenom"));
+			    
 			    TG comptable = new TG();
+			    comptable.setId(res.getInt("comptable_id"));
 			    comptable.setNom(res.getString("comptable_nom"));
 			    comptable.setPrenom(res.getString("comptable_prenom"));
 			    
@@ -519,6 +524,45 @@ public class OrdonnanceDelegation extends ObjetPersistant {
 		}
     }
 
+    
+    public void clore() throws Exception
+    {
+        Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+		String query="UPDATE ordonnance set etat='4' WHERE id='" + getId() + "'";
+		try
+		{
+	        conn = ds.getConnection();
+			s = conn.createStatement();
+			res = s.executeQuery(query);
+		}
+	    catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}
+    }
 /**
  * <p>Enregistre l'objet dans le SGBD.</p>
  * <p>Cette operation correspond a une transaction</p>
@@ -584,6 +628,7 @@ public class OrdonnanceDelegation extends ObjetPersistant {
 		    conn = ds.getConnection();
 			s = conn.createStatement();
 		    query = "SELECT id from ordonnance WHERE libelle='" + getLibelle() + "' AND date='" + getDate() + "' AND montant='" + getMontant() + "'";
+		    System.out.println(query);
 			res = s.executeQuery(query);
 			if (res.next())
 			{
@@ -621,6 +666,7 @@ public class OrdonnanceDelegation extends ObjetPersistant {
 		{
 		    conso = (Consommable)(getConsommables()).elementAt(i);
 			query = "INSERT INTO consomme(consommable_id, ordonnance_id, quantite) VALUES ('" + conso.getId() + "', '" + getId()  + "', '" + conso.getQuantite() + "')";
+			System.out.println(query);
 	        try 
 	        {
 	            conn = ds.getConnection();

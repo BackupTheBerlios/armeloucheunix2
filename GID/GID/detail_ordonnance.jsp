@@ -34,7 +34,7 @@
 	}
 %>
 </div>
-<div class="message">
+<div class="mess">
 Vous avez un message GID : 
 </div>
 <% 
@@ -47,7 +47,7 @@ Vous avez un message GID :
 	else if (titre.equalsIgnoreCase("Ordonnances de delegation en cours de traitement"))
 	{
 %>
-
+ 		<%@ include file="messageGIDEncours.jsp" %>
 <%
 	}
 	else

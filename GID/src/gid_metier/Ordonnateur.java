@@ -8,6 +8,8 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+
+import java.util.GregorianCalendar;
 import java.util.Vector;
 /**
  * <p>Repr&eacute;sente l'ordonnateur principal, acteur qui initie la proc&eacute;dure de d&eacute;l&eacute;gation de cr&eacute;dit</p>
@@ -563,11 +565,18 @@ public class Ordonnateur extends Acteur {
     {
         Context initCtx = new InitialContext();
 		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
-	    try
+		boolean deja_a_traiter = false;
+		String query;
+		try
 		{
 	        conn = ds.getConnection();
 			s = conn.createStatement();
-			s.executeQuery("INSERT INTO a_traiter(ordonnance_id, acteur_id) VALUES ('" + ordonnance.getId() + "', '" + destinataire.getId() + "')");
+			query = "SELECT ordonnance_id FROM a_traiter WHERE acteur_id='" + destinataire.getId() + "' AND ordonnance_id='" + ordonnance.getId() + "'";
+			res = s.executeQuery(query);
+			if (res.next())
+			{
+			    deja_a_traiter = true;
+			}
 		}
 	    catch (SQLException e)
 		{
@@ -594,7 +603,44 @@ public class Ordonnateur extends Acteur {
 				} catch (SQLException e) {}
 				conn = null;
 			}
-		}    
+		}
+		try
+		{
+	        conn = ds.getConnection();
+			s = conn.createStatement();
+			query = "INSERT INTO a_traiter(ordonnance_id, acteur_id) VALUES ('" + ordonnance.getId() + "', '" + destinataire.getId() + "')";
+		    System.out.println(query);
+		    if(deja_a_traiter==false)
+		    {
+		        s.executeQuery(query);
+		    }
+		}
+	    catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}
     }
 
 /**
@@ -925,7 +971,7 @@ public class Ordonnateur extends Acteur {
 		{
 		    conn2 = ds.getConnection();
 			s2 = conn2.createStatement();
-			String q = "SELECT id FROM ordonnance WHERE etat='4' AND initiateur_id='" + getId() + "' AND id NOT IN (SELECT ordonnance_id FROM a_traiter)";
+			String q = "SELECT id FROM ordonnance WHERE etat='4' AND initiateur_id='" + getId() + "' AND id NOT IN (SELECT ordonnance_id FROM a_traiter) ORDER BY date DESC";
 			System.out.println(q);
 			res2 = s2.executeQuery(q);
 			
@@ -974,7 +1020,7 @@ public class Ordonnateur extends Acteur {
 		{
 		    conn2 = ds.getConnection();
 			s2 = conn2.createStatement();
-			String q = "SELECT id FROM ordonnance WHERE etat!='4' AND initiateur_id='" + getId() + "' AND id NOT IN (SELECT ordonnance_id FROM a_traiter where acteur_id='" + getId() +"') ORDER BY date desc";
+			String q = "SELECT id FROM ordonnance WHERE etat!='4' AND initiateur_id='" + getId() + "' AND id NOT IN (SELECT ordonnance_id FROM a_traiter where acteur_id='" + getId() +"') ORDER BY date DESC";
 			System.out.println(q);
 			res2 = s2.executeQuery(q);
 			
@@ -1028,29 +1074,40 @@ public class Ordonnateur extends Acteur {
  * @param ordonnance la nouvelle ordonnance
  * @throws Si la vérification n'est pas satisfaite ou si les acces au SGBD ont retournés des erreurs
  */
-    public void saisirOrdonnanceDelegation(gid_metier.OrdonnanceDelegation ordonnance) throws Exception {        
+    public void saisirOrdonnanceDelegation(gid_metier.OrdonnanceDelegation ordonnance) throws Exception {
+        ordonnance.setLibelle(ordonnance.getLibelle().replaceAll("'", "&rsquo;").substring(0, (int)java.lang.Math.min(ordonnance.getLibelle().replaceAll("'", "&rsquo").length(), 29)));
         ordonnance.sauver();
+        GregorianCalendar dateG = new GregorianCalendar();
+	    java.util.Date date = dateG.getTime();
+        Action act = new Action();
+	    act.setLibelle("Autre");
+	    act.setDate(date);
+	    act.setType(4);
+	    act.setParticipant(this);
+	    act.setOrdonnance(ordonnance);
+	    act.sauver();
+	    act.setLibelle("Transmission");
+	    act.setType(2);
+	    act.sauver();
         try
 		{
 		    conn2 = ds.getConnection();
 			s2 = conn2.createStatement();
-			String q = "SELECT id FROM ordonnance WHERE etat!='4' AND initiateur_id='" + getId() + "' AND id NOT IN (SELECT ordonnance_id FROM a_traiter where acteur_id='" + getId() +"') ORDER BY date desc";
+			String q = "SELECT id FROM ordonnance WHERE date='" + ordonnance.getDate() + "' AND libelle='" + ordonnance.getLibelle() + "' AND initiateur_id='" + getId() + "'";
 			System.out.println(q);
 			res2 = s2.executeQuery(q);
 			
 			while(res2.next())
 			{
-			    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
 			    try
 			    {
-			        ordon.chargeParId(res2.getInt("id"));
+			        ordonnance.chargeParId(res2.getInt("id"));
 			    }
 			    catch(Exception e)
 			    {
 			        System.out.println(e.getMessage());
 			    }
-				addEnCours(ordon);
-				System.out.println(ordon.getId());
+				getEnCours().add(0, ordonnance);
 			}
 		}
 	    catch (SQLException e)

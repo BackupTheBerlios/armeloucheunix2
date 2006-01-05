@@ -86,15 +86,7 @@ public class RequeteSql extends HttpServlet
 				sousOrdonnateur=(gid_metier.SousOrdonnateur)Beans.instantiate(this.getClass().getClassLoader(), "gid_metier.SousOrdonnateur" );
 				pageContext.setAttribute("sousOrdonnateur", sousOrdonnateur, PageContext.SESSION_SCOPE );
 	        }
-	       
-	        /*comptabilite = (Comptabilite)pageContext.getAttribute("comptabilite",PageContext.SESSION_SCOPE);
-			if (comptabilite == null)
-			{
-				comptabilite =(gid_metier.Comptabilite)Beans.instantiate(this.getClass().getClassLoader(), "gid_metier.Comptabilite" );
-				pageContext.setAttribute("comptabilite", comptabilite, PageContext.SESSION_SCOPE );
-			}
-			*/
-						
+	       			
 			if (request.getParameter("action") != null )
 			{
 				action = request.getParameter("action");
@@ -385,8 +377,6 @@ public class RequeteSql extends HttpServlet
 			    try
 			    {
 				    titre = (java.lang.String)pageContext.getAttribute("titre",PageContext.SESSION_SCOPE);
-			        
-			        
 			    }
 			    catch( Exception e )
 				{
@@ -429,7 +419,10 @@ public class RequeteSql extends HttpServlet
 			    int etatOrdo = ordon.getEtat();
 			    Acteur acteur=null;
 			    GregorianCalendar dateG = new GregorianCalendar();
-			    Date date = new Date(dateG.get(GregorianCalendar.YEAR)-1900, dateG.get(GregorianCalendar.MONTH), dateG.get(GregorianCalendar.DAY_OF_MONTH));
+			    java.util.Date date = dateG.getTime();
+			    /*date.setHours(dateG.get(GregorianCalendar.HOUR_OF_DAY));
+			    date.setMinutes(dateG.get(GregorianCalendar.MINUTE));
+			    date.setSeconds(dateG.get(GregorianCalendar.SECOND));*/
 			    if (cced.identifie())
 			    {
 			    	switch(etatOrdo)
@@ -453,38 +446,51 @@ public class RequeteSql extends HttpServlet
 			    		    acteur=ordon.getInitiateur();
 			    		    break;
 			    		}
-			    		case 2:break;
-			    		case 3:break;
-			    		case 4:break;
 			    	}
-			    	
-			    	    try
-			    	    {
-				    	    
-			    		    cced.viser(ordon);
-				    	    cced.transmettreOrdonnance(ordon, acteur);
-				    	    cced.prendreOrdonnanceEnCharge(ordon);
-			    	    }
-			    	    catch(Exception e)
-			    	    {
-			    	        System.out.println(e.getMessage());
-			    	    }
-			    	    gotoPage("/tableau_de_bord.jsp",request,response);
+		    	    try
+		    	    {
+			    	    
+		    		    cced.viser(ordon);
+			    	    cced.transmettreOrdonnance(ordon, acteur);
+			    	    cced.prendreOrdonnanceEnCharge(ordon);
+			    	    cced.addEnCours(ordon);
+			    	    Action act = new Action();
+			    	    act.setLibelle("Prise en charge");
+			    	    act.setDate(date);
+			    	    act.setType(1);
+			    	    act.setParticipant(cced);
+			    	    act.setOrdonnance(ordon);
+			    	    act.sauver();
+			    	    act.setLibelle("Visa");
+			    	    act.setType(3);
+			    	    act.sauver();
+			    	    act.setLibelle("Transmission");
+			    	    act.setType(2);
+			    	    act.sauver();
+		    	    }
+		    	    catch(Exception e)
+		    	    {
+		    	        System.out.println(e.getMessage());
+		    	    }
+		    	    gotoPage("/tableau_de_bord.jsp",request,response);
 			    }
 			    else if (cped.identifie())
 			    {
-			        acteur=cped;
-			        switch(etatOrdo)
-			    	{
-			    		case 1:break;
-			    		case 2:break;
-			    		case 3:break;
-			    		case 4:break;
-			    	}
 			        try
 			    	{
-			            cped.transmettreOrdonnance(ordon, acteur);
+			            cped.transmettreOrdonnance(ordon, ordon.getDelegataire());
 			            cped.prendreOrdonnanceEnCharge(ordon);
+			            cped.addEnCours(ordon);
+			            Action act = new Action();
+			    	    act.setLibelle("Prise en charge");
+			    	    act.setDate(date);
+			    	    act.setType(1);
+			    	    act.setParticipant(cped);
+			    	    act.setOrdonnance(ordon);
+			    	    act.sauver();
+			    	    act.setLibelle("Transmission");
+			    	    act.setType(2);
+			    	    act.sauver();
 			    	}
 			    	catch(Exception e)
 			    	{
@@ -495,7 +501,10 @@ public class RequeteSql extends HttpServlet
 			    {
 			        switch(etatOrdo)
 			    	{
-			    		case 1:break;
+			    		case 1:
+			    		    {
+			    		    	break;
+			    		    }
 			    		case 2:
 			    		{
 			    		    if(request.getParameter("transmettre").equalsIgnoreCase("transmettre"))
@@ -516,8 +525,6 @@ public class RequeteSql extends HttpServlet
 		    		    {
 			    		    try
 			    		    {
-			    		        /*ordonnateur.transmettreOrdonnance(ordon, ordon.getDelegataire());
-					    	    ordonnateur.prendreOrdonnanceEnCharge(ordon);*/
 			    		        acteur = ordon.getDelegataire();
 			    		    }
 			    		    catch (Exception e)
@@ -526,12 +533,21 @@ public class RequeteSql extends HttpServlet
 			    		    }
 			    		    break;
 		    		    }
-			    		case 4:break;
 			    	}
 			        try
 			    	{
 			            ordonnateur.transmettreOrdonnance(ordon, acteur);
 			            ordonnateur.prendreOrdonnanceEnCharge(ordon);
+			            Action act = new Action();
+			    	    act.setLibelle("Prise en charge");
+			    	    act.setDate(date);
+			    	    act.setType(1);
+			    	    act.setParticipant(ordonnateur);
+			    	    act.setOrdonnance(ordon);
+			    	    act.sauver();
+			    	    act.setLibelle("Transmission");
+			    	    act.setType(2);
+			    	    act.sauver();
 			    	}
 			    	catch(Exception e)
 			    	{
@@ -540,18 +556,41 @@ public class RequeteSql extends HttpServlet
 			    }
 			    else if (sousOrdonnateur.identifie())
 			    {
-			        acteur=sousOrdonnateur;
 			        switch(etatOrdo)
 			    	{
-			    		case 1:break;
-			    		case 2:break;
-			    		case 3:break;
-			    		case 4:break;
+			    		case 3:
+			    		    {
+			    		    	try
+			    		    	{
+			    		    	    sousOrdonnateur.transmettreOrdonnance(ordon, sousOrdonnateur.getTr_tp());
+			    		    	    break;
+			    		    	}
+			    		    	catch(Exception e)
+			    		    	{
+			    		    	    
+			    		    	}
+			    		    }
 			    	}
 			        try
 			    	{
-			            sousOrdonnateur.transmettreOrdonnance(ordon, acteur);
+			            if(sousOrdonnateur.verifOrdoEnvoye(ordon))
+			            {
+			                sousOrdonnateur.transmettreOrdonnance(ordon, sousOrdonnateur.getCped());
+			            }
 			            sousOrdonnateur.prendreOrdonnanceEnCharge(ordon);
+			            sousOrdonnateur.addEnCours(ordon);
+			            
+			            Action act = new Action();
+			    	    act.setLibelle("Prise en charge");
+			    	    act.setDate(date);
+			    	    act.setType(1);
+			    	    act.setParticipant(sousOrdonnateur);
+			    	    act.setOrdonnance(ordon);
+			    	    act.sauver();
+			    	    act.setLibelle("Transmission");
+			    	    act.setType(2);
+			    	    act.sauver();
+			            
 			    	}
 			    	catch(Exception e)
 			    	{
@@ -562,7 +601,6 @@ public class RequeteSql extends HttpServlet
 			    {
 			        switch(etatOrdo)
 			    	{
-			    		case 1:break;
 			    		case 2:
 		    		    {
 			    		    if(request.getParameter("viser").equalsIgnoreCase("true"))
@@ -579,24 +617,28 @@ public class RequeteSql extends HttpServlet
 			    		        ordon.setDateVisaTG(date);
 			    		        ordon.setEtat(2);
 			    		    }
-			    		    try
-			    		    {
-			    		        tg.viser(ordon);
-			    		    }
-			    		    catch(Exception e)
-			    		    {
-			    		        
-			    		    }
 			    		    acteur=ordon.getInitiateur();
 		    		    	break;
 		    		    }
-			    		case 3:break;
-			    		case 4:break;
 			    	}
 			        try
 			    	{
 			            tg.transmettreOrdonnance(ordon, acteur);
 			            tg.prendreOrdonnanceEnCharge(ordon);
+			            tg.viser(ordon);
+			            Action act = new Action();
+			    	    act.setLibelle("Prise en charge");
+			    	    act.setDate(date);
+			    	    act.setType(1);
+			    	    act.setParticipant(tg);
+			    	    act.setOrdonnance(ordon);
+			    	    act.sauver();
+			    	    act.setLibelle("Visa");
+			    	    act.setType(3);
+			    	    act.sauver();
+			    	    act.setLibelle("Transmission");
+			    	    act.setType(2);
+			    	    act.sauver();
 			    	}
 			    	catch(Exception e)
 			    	{
@@ -605,18 +647,21 @@ public class RequeteSql extends HttpServlet
 			    }
 			    else if (tr_tp.identifie())
 			    {
-			        acteur=tr_tp;
-			        switch(etatOrdo)
-			    	{
-			    		case 1:break;
-			    		case 2:break;
-			    		case 3:break;
-			    		case 4:break;
-			    	}
 			        try
 			    	{
-			            tr_tp.transmettreOrdonnance(ordon, acteur);
+			            ordon.clore();
 			            tr_tp.prendreOrdonnanceEnCharge(ordon);
+			            Action act = new Action();
+			    	    act.setLibelle("Prise en charge");
+			    	    act.setDate(date);
+			    	    act.setType(1);
+			    	    act.setParticipant(tr_tp);
+			    	    act.setOrdonnance(ordon);
+			    	    act.sauver();
+			    	    act.setLibelle("Transmission");
+			    	    act.setType(2);
+			    	    act.sauver();
+			            tr_tp.addArchives(ordon);
 			    	}
 			    	catch(Exception e)
 			    	{

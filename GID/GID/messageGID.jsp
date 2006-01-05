@@ -31,9 +31,7 @@ switch(typeActeur)
 			{
 				switch(etat)
 				{
-					case 1 : message = "<b>Viser l'ordonnance? </b><input name=\"viser\" type=\"radio\" value=\"true\">Oui<br/><input name=\"viser\" type=\"radio\" value=\"false\">Non<br><input class=\"valider\" type=\"submit\" value=\"Valider\">";break;
-					case 2 : message = "";break;
-					case 3 : message = "";break;
+					case 1 : message = "<b>Viser l'ordonnance? </b><div class=\"reponse\"><input name=\"viser\" type=\"radio\" value=\"true\">Oui<br/><input name=\"viser\" type=\"radio\" value=\"false\">Non</div><br><input class=\"valider\" type=\"submit\" value=\"Valider\">";break;
 				}
 				break;
 			}
@@ -41,9 +39,8 @@ switch(typeActeur)
 			{
 				switch(etat)
 				{
-					case 1 : message = "";break;
-					case 2 : message = "L'ordonnance est visée par le CED et inscrite à votre comptabilité";break;
-					case 3 : message = "L'ordonnance a été visée par la TG <input class=\"transmettre\" type=\"submit\" value=\"Transmettre au sous ordonnateur\"";break;
+					case 2 : message = "L'ordonnance est visée par le CED.<br><input class=\"transmettre\" type=\"submit\" value=\"Inscrire à la comptabilité\"";break;
+					case 3 : message = "L'ordonnance a été visée par la TG.<br><input class=\"transmettre\" type=\"submit\" value=\"Inscrire à la comptabilité\"";break;
 				}
 				break;
 			}
@@ -69,9 +66,8 @@ switch(typeActeur)
 			{
 				switch(etat)
 				{
-					case 1 : message = "";break;
-					case 2 : message = "L'ordonnance est visée par le CED et inscrite à votre comptabilité. Elle a été transmise à votre CPED";break;
-					case 3 : message = "L'ordonnance est visée par la TG et inscrite à votre comptabilité. Elle a été transmise à votre CPED et à votre TR/TP";break;
+					case 2 : message = "L'ordonnance est visée par le CED et inscrite à votre comptabilité. <input class=\"transmettre\" type=\"submit\" value=\"Transmettre au CPED\"";break;
+					case 3 : message = "L'ordonnance est visée par la TG et inscrite à votre comptabilité. <input class=\"transmettre\" type=\"submit\" value=\"Transmettre au TR/TP\"";break;
 				}
 				break;
 			}
@@ -79,9 +75,7 @@ switch(typeActeur)
 			{
 				switch(etat)
 				{
-					case 1 : message = "";break;
 					case 2 : message = "<b>Viser l'ordonnance?</b> <input name=\"viser\" type=\"radio\" value=\"true\">Oui<br><input name=\"viser\" type=\"radio\" value=\"false\">Non<input class=\"valider\" type=\"submit\" value=\"Valider\">";break;
-					case 3 : message = "";break;
 				}
 				break;
 			}
@@ -89,9 +83,7 @@ switch(typeActeur)
 			{
 				switch(etat)
 				{
-					case 1 : message = "";break;
-					case 2 : message = "";break;
-					case 3 : message = "L'ordonnance est inscrite à votre comptabilité";break;
+					case 3 : message = "L'ordonnance est inscrite à votre comptabilité <br><input class=\"transmettre\" type=\"submit\" value=\"Clore la procédure\"";break;
 				}
 				break;
 			}

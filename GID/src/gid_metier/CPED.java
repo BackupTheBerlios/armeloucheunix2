@@ -483,11 +483,18 @@ public class CPED extends Acteur {
     {
         Context initCtx = new InitialContext();
 		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
-	    try
+		boolean deja_a_traiter = false;
+		String query;
+		try
 		{
 	        conn = ds.getConnection();
 			s = conn.createStatement();
-			s.executeQuery("INSERT INTO a_traiter(ordonnance_id, acteur_id) VALUES ('" + ordonnance.getId() + "', '" + destinataire.getId() + "'");
+			query = "SELECT ordonnance_id FROM a_traiter WHERE acteur_id='" + destinataire.getId() + "' AND ordonnance_id='" + ordonnance.getId() + "'";
+			res = s.executeQuery(query);
+			if (res.next())
+			{
+			    deja_a_traiter = true;
+			}
 		}
 	    catch (SQLException e)
 		{
@@ -514,7 +521,44 @@ public class CPED extends Acteur {
 				} catch (SQLException e) {}
 				conn = null;
 			}
-		}    
+		}
+		try
+		{
+	        conn = ds.getConnection();
+			s = conn.createStatement();
+			query = "INSERT INTO a_traiter(ordonnance_id, acteur_id) VALUES ('" + ordonnance.getId() + "', '" + destinataire.getId() + "')";
+		    System.out.println(query);
+		    if(deja_a_traiter==false)
+		    {
+		        s.executeQuery(query);
+		    }
+		}
+	    catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}
     }
 
 /**
@@ -758,7 +802,7 @@ public class CPED extends Acteur {
 			 {
 			    conn2 = ds.getConnection();
 				s2 = conn2.createStatement();
-				res2 = s2.executeQuery("SELECT ordonnance_id FROM a_traiter WHERE a_traiter.acteur_id='" + getId() + "' ORDER BY date DESC");
+				res2 = s2.executeQuery("SELECT ordonnance_id FROM a_traiter WHERE a_traiter.acteur_id='" + getId() + "'");
 				while(res2.next())
 				{
 				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
@@ -852,7 +896,7 @@ public class CPED extends Acteur {
 			{
 			    conn2 = ds.getConnection();
 				s2 = conn2.createStatement();
-				String q = "SELECT id FROM ordonnance WHERE etat!='4' AND delegataire_id IN (SELECT id FROM sousordonnateur WHERE cped_id='" + getId() + "') AND id NOT IN (SELECT ordonnance_id FROM a_traiter where acteur_id='" + getId() +"') ORDER BY date DESC";
+				String q = "SELECT id FROM ordonnance WHERE etat IN ('2', '3') AND delegataire_id IN (SELECT id FROM sousordonnateur WHERE cped_id='" + getId() + "') AND id NOT IN (SELECT ordonnance_id FROM a_traiter where acteur_id='" + getId() +"') AND id IN (SELECT ordonnance_id FROM action WHERE participant_id='" + getId() + "') ORDER BY date DESC";
 				System.out.println(q);
 				res2 = s2.executeQuery(q);
 				

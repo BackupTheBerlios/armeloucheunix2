@@ -521,7 +521,8 @@ public class SousOrdonnateur extends Acteur {
 		{
 	        conn = ds.getConnection();
 			s = conn.createStatement();
-			s.executeQuery("INSERT INTO a_traiter(ordonnance_id, acteur_id) VALUES ('" + ordonnance.getId() + "', '" + destinataire.getId() + "'");
+			String q = "INSERT INTO a_traiter(ordonnance_id, acteur_id) VALUES ('" + ordonnance.getId() + "', '" + destinataire.getId() + "')"; 
+			s.executeQuery(q);
 		}
 	    catch (SQLException e)
 		{
@@ -795,7 +796,8 @@ public class SousOrdonnateur extends Acteur {
 			 {
 			    conn2 = ds.getConnection();
 				s2 = conn2.createStatement();
-				res2 = s2.executeQuery("SELECT ordonnance_id FROM a_traiter WHERE a_traiter.acteur_id='" + getId() + "' ORDER BY date DESC");
+				String query = "SELECT ordonnance_id FROM a_traiter WHERE a_traiter.acteur_id='" + getId() + "' AND ordonnance_id NOT IN(SELECT ordonnance_id FROM a_traiter, ordonnance WHERE ordonnance_id=id AND a_traiter.acteur_id != '" + getId() + "' AND (a_traiter.acteur_id IN (SELECT initiateur_id FROM ordonnance) AND etat='3') OR (etat='2' AND a_traiter.acteur_id IN (SELECT comptable_id FROM ordonnance)))";
+				res2 = s2.executeQuery(query);
 				while(res2.next())
 				{
 				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
@@ -916,7 +918,8 @@ public class SousOrdonnateur extends Acteur {
 		{
 		    conn2 = ds.getConnection();
 			s2 = conn2.createStatement();
-			String q = "SELECT id FROM ordonnance WHERE etat!='4' AND delegataire_id='" + getId() + "' AND id NOT IN (SELECT ordonnance_id FROM a_traiter where acteur_id='" + getId() +"') ORDER BY date DESC";
+			String q = "SELECT id FROM ordonnance WHERE id IN (SELECT action.ordonnance_id FROM action WHERE participant_id='" + getId() + "' AND type='1') EXCEPT (SELECT ordonnance_id FROM a_traiter WHERE acteur_id='" + getId() + "' UNION SELECT a.ordonnance_id FROM a_traiter a, a_traiter b, ordonnance o WHERE a.ordonnance_id=b.ordonnance_id AND a.ordonnance_id=o.id AND b.acteur_id='" + getId() + "' AND ((a.acteur_id=o.initiateur_id AND o.etat='3') OR a.acteur_id=o.comptable_id))";
+			//String q = "SELECT id FROM ordonnance WHERE (id IN (SELECT action.ordonnance_id FROM action WHERE participant_id='" + getId() + "' AND type='1') AND id IN (SELECT a.ordonnance_id FROM a_traiter a, a_traiter b, ordonnance o WHERE a.acteur_id='" + getId() +"' AND (b.acteur_id=o.comptable_id OR b.acteur_id=o.initiateur_id) AND b.ordonnance_id=o.id)";
 			System.out.println(q);
 			res2 = s2.executeQuery(q);
 			
@@ -962,4 +965,50 @@ public class SousOrdonnateur extends Acteur {
 			}
 		}
 	}
+    
+    public boolean verifOrdoEnvoye(OrdonnanceDelegation ordon)throws NamingException
+    {
+        boolean r=false;
+        Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+	    try
+		{
+	        conn = ds.getConnection();
+			s = conn.createStatement();
+			String q = "SELECT ordonnance_id FROM action WHERE ordonnance_id IN (SELECT ordonnance_id FROM action WHERE type='1' AND participant_id='" + getCped().getId() + "')";
+			res = s.executeQuery(q);
+			if (res.next())
+			{
+			    r = true;
+			}
+		}
+	    catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}   
+		return r;
+    }
+    
  }

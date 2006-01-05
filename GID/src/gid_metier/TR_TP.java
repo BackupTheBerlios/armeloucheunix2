@@ -712,7 +712,7 @@ public class TR_TP extends Acteur {
 			 {
 			    conn2 = ds.getConnection();
 				s2 = conn2.createStatement();
-				res2 = s2.executeQuery("SELECT ordonnance_id FROM a_traiter WHERE a_traiter.acteur_id='" + getId() + "' ORDER BY date DESC");
+				res2 = s2.executeQuery("SELECT ordonnance_id FROM a_traiter WHERE a_traiter.acteur_id='" + getId() + "'");
 				while(res2.next())
 				{
 				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();

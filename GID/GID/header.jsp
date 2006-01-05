@@ -13,7 +13,7 @@
 <jsp:useBean id="tr_tp" class="gid_metier.TR_TP" scope="session" />
 <jsp:useBean id="ordon" class="gid_metier.OrdonnanceDelegation" scope="session" />
 <jsp:useBean id="ordonnances" class="Vector" scope="session" />
-<jsp:useBean id="titre" class="java.lang.String" scope="session" />
+<jsp:useBean id="titre" class="String" scope="session" />
 
 
 <link href="/GID/style.css" rel="stylesheet" type="text/css">
