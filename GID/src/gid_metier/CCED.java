@@ -823,7 +823,7 @@ public class CCED extends Acteur {
 			}
 			finally
 			{
-				if (res != null)
+				if (res2 != null)
 				{
 					try {
 						res2.close();
@@ -872,7 +872,7 @@ public class CCED extends Acteur {
 			}
 			finally
 			{
-				if (res != null)
+				if (res2 != null)
 				{
 					try {
 						res2.close();
@@ -921,7 +921,7 @@ public class CCED extends Acteur {
 			}
 			finally
 			{
-				if (res != null)
+				if (res2 != null)
 				{
 					try {
 						res2.close();

@@ -733,7 +733,7 @@ public class TR_TP extends Acteur {
 			}
 			finally
 			{
-				if (res != null)
+				if (res2 != null)
 				{
 					try {
 						res2.close();
@@ -782,7 +782,7 @@ public class TR_TP extends Acteur {
 			}
 			finally
 			{
-				if (res != null)
+				if (res2 != null)
 				{
 					try {
 						res2.close();
@@ -831,7 +831,7 @@ public class TR_TP extends Acteur {
 			}
 			finally
 			{
-				if (res != null)
+				if (res2 != null)
 				{
 					try {
 						res2.close();
@@ -879,4 +879,48 @@ public class TR_TP extends Acteur {
 			}
 		}
 	}
+    public boolean peut_clore(OrdonnanceDelegation ordon) throws NamingException
+    {
+        boolean r=false;
+        Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+	    try
+		{
+	        conn = ds.getConnection();
+			s = conn.createStatement();
+			String query="SELECT ordonnance_id FROM action WHERE ordonnance_id='" + ordon.getId() + "' AND participant_id IN (SELECT cped_id FROM sousordonnateur WHERE tr_tp_id='" + getId() + "' AND sousordonnateur.id IN (SELECT delegataire_id FROM ordonnance WHERE ordonnance.id='" + ordon.getId() + "'))";
+			res = s.executeQuery(query);
+			if (res.next())
+			{
+			    r = true;
+			}
+		}
+	    catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}
+		return r;
+    }
 }

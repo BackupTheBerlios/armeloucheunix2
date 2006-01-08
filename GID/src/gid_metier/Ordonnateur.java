@@ -920,7 +920,7 @@ public class Ordonnateur extends Acteur {
 			}
 			finally
 			{
-				if (res != null)
+				if (res2 != null)
 				{
 					try {
 						res2.close();
@@ -996,7 +996,7 @@ public class Ordonnateur extends Acteur {
 		}
 		finally
 		{
-			if (res != null)
+			if (res2 != null)
 			{
 				try {
 					res2.close();
@@ -1045,7 +1045,7 @@ public class Ordonnateur extends Acteur {
 		}
 		finally
 		{
-			if (res != null)
+			if (res2 != null)
 			{
 				try {
 					res2.close();

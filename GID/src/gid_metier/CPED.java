@@ -969,4 +969,51 @@ public class CPED extends Acteur {
 			}
 		}
 	}
+    public boolean verifOrdoEnvoye(OrdonnanceDelegation ordon)throws NamingException
+    {
+        boolean r=true;
+        Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+	    try
+		{
+	        conn = ds.getConnection();
+			s = conn.createStatement();
+			String q = "SELECT DISTINCT id FROM ordonnance WHERE id='" + ordon.getId() + "' AND id IN (SELECT ordonnance_id FROM a_traiter WHERE acteur_id IN (SELECT tr_tp_id from sousordonnateur WHERE cped_id='" + getId() + "'))";
+			//String q = "SELECT ordonnance_id FROM action WHERE ordonnance_id IN (SELECT ordonnance_id FROM action WHERE type='1' AND participant_id='" + getCped().getId() + "')";
+			res = s.executeQuery(q);
+			if (res.next())
+			{
+			    r = false;
+			}
+		}
+	    catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}   
+		return r;
+    }
+    
+    
  }

@@ -472,13 +472,15 @@ public class RequeteSql extends HttpServlet
 		    	    {
 		    	        System.out.println(e.getMessage());
 		    	    }
-		    	    gotoPage("/tableau_de_bord.jsp",request,response);
 			    }
 			    else if (cped.identifie())
 			    {
 			        try
 			    	{
-			            cped.transmettreOrdonnance(ordon, ordon.getDelegataire());
+			            if (cped.verifOrdoEnvoye(ordon))
+			            {
+				            cped.transmettreOrdonnance(ordon, ordon.getDelegataire());
+			            }
 			            cped.prendreOrdonnanceEnCharge(ordon);
 			            cped.addEnCours(ordon);
 			            Action act = new Action();
@@ -649,25 +651,29 @@ public class RequeteSql extends HttpServlet
 			    {
 			        try
 			    	{
-			            ordon.clore();
-			            tr_tp.prendreOrdonnanceEnCharge(ordon);
-			            Action act = new Action();
-			    	    act.setLibelle("Prise en charge");
-			    	    act.setDate(date);
-			    	    act.setType(1);
-			    	    act.setParticipant(tr_tp);
-			    	    act.setOrdonnance(ordon);
-			    	    act.sauver();
-			    	    act.setLibelle("Transmission");
-			    	    act.setType(2);
-			    	    act.sauver();
-			            tr_tp.addArchives(ordon);
+			            if (tr_tp.peut_clore(ordon))
+			            {
+				            ordon.clore();
+				            tr_tp.prendreOrdonnanceEnCharge(ordon);
+				            Action act = new Action();
+				    	    act.setLibelle("Prise en charge");
+				    	    act.setDate(date);
+				    	    act.setType(1);
+				    	    act.setParticipant(tr_tp);
+				    	    act.setOrdonnance(ordon);
+				    	    act.sauver();
+				    	    act.setLibelle("Transmission");
+				    	    act.setType(2);
+				    	    act.sauver();
+				            tr_tp.addArchives(ordon);
+			            }
 			    	}
 			    	catch(Exception e)
 			    	{
 			    	    
 			    	}
 			    }
+			    gotoPage("/tableau_de_bord.jsp",request,response);
 			}
 			if (action.equalsIgnoreCase("nouvelle_ordonnance"))
 			{

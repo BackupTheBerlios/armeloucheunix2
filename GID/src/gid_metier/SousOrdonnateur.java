@@ -796,7 +796,10 @@ public class SousOrdonnateur extends Acteur {
 			 {
 			    conn2 = ds.getConnection();
 				s2 = conn2.createStatement();
-				String query = "SELECT ordonnance_id FROM a_traiter WHERE a_traiter.acteur_id='" + getId() + "' AND ordonnance_id NOT IN(SELECT ordonnance_id FROM a_traiter, ordonnance WHERE ordonnance_id=id AND a_traiter.acteur_id != '" + getId() + "' AND (etat='2' AND a_traiter.acteur_id IN (SELECT comptable_id FROM ordonnance)))";
+				String query = "SELECT a.ordonnance_id FROM a_traiter a WHERE a.acteur_id='" + getId() + "' AND a.ordonnance_id IN (SELECT ordonnance.id FROM ordonnance, action, a_traiter WHERE ordonnance.id=action.ordonnance_id AND action.participant_id!='" + getId() + "' AND (etat='2' AND a_traiter.acteur_id IN (SELECT comptable_id FROM ordonnance)) OR (etat='3' AND a_traiter.acteur_id IN (SELECT initiateur_id FROM ordonnance)))";
+				//String query = "SELECT a.ordonnance_id FROM a_traiter a WHERE a.acteur_id='" + getId() + "' AND a.ordonnance_id IN (SELECT ordonnance.id FROM ordonnance, action, a_traiter WHERE ordonnance.id=action.ordonnance_id AND action.participant_id!='" + getId() + "' AND (etat='2' AND a_traiter.acteur IN (SELECT comptable_id FROM ordonnance)) OR (etat='3' AND a_traiter.acteur IN (SELECT initiateur_id FROM ordonnance))";
+				//String query = "SELECT ordonnance_id FROM a_traiter WHERE a_traiter.acteur_id='" + getId() + "' AND ordonnance_id NOT IN(SELECT a_traiter.ordonnance_id FROM a_traiter, ordonnance, action WHERE action.ordonnance_id=ordonnance.id AND action.participant_id IN (SELECT cped_id FROM sousordonnateur WHERE sousordonnateur.id='" + getId() + "') AND a_traiter.ordonnance_id=ordonnance.id AND a_traiter.acteur_id != '" + getId() + "' AND (etat='2' AND a_traiter.acteur_id IN (SELECT comptable_id FROM ordonnance)))";
+				//String query = "SELECT ordonnance_id FROM a_traiter WHERE a_traiter.acteur_id='" + getId() + "' AND ordonnance_id NOT IN(SELECT ordonnance_id FROM a_traiter, ordonnance WHERE ordonnance_id=id AND a_traiter.acteur_id != '" + getId() + "' AND (etat='2' AND a_traiter.acteur_id IN (SELECT comptable_id FROM ordonnance)))";
 				//String query = "SELECT ordonnance_id FROM a_traiter WHERE a_traiter.acteur_id='" + getId() + "' AND ordonnance_id NOT IN(SELECT ordonnance_id FROM a_traiter, ordonnance WHERE ordonnance_id=id AND a_traiter.acteur_id != '" + getId() + "' AND (a_traiter.acteur_id IN (SELECT initiateur_id FROM ordonnance) AND etat='3') OR (etat='2' AND a_traiter.acteur_id IN (SELECT comptable_id FROM ordonnance)))";
 				res2 = s2.executeQuery(query);
 				while(res2.next())
@@ -819,7 +822,7 @@ public class SousOrdonnateur extends Acteur {
 			}
 			finally
 			{
-				if (res != null)
+				if (res2 != null)
 				{
 					try {
 						res2.close();
@@ -839,6 +842,55 @@ public class SousOrdonnateur extends Acteur {
 					conn2 = null;
 				}
 			}
+			/*try
+			 {
+			    conn2 = ds.getConnection();
+				s2 = conn2.createStatement();
+				String query = "SELECT DISTINCT a.ordonnance_id FROM a_traiter a, a_traiter b WHERE a.ordonnance_id=b.ordonnance_id AND a.acteur_id='" + getId() + "' AND b.acteur_id NOT IN (SELECT DISTINCT comptable_id FROM ordonnance WHERE delegataire_id='" + getId() + "' UNION SELECT DISTINCT initiateur_id FROM ordonnance WHERE delegataire_id='" + getId() + "') AND a.ordonnance_id IN (SELECT ordonnance.id FROM ordonnance, action WHERE ordonnance.id=action.ordonnance_id AND etat='3')";
+				//String query = "SELECT ordonnance_id FROM a_traiter WHERE a_traiter.acteur_id='" + getId() + "' AND ordonnance_id NOT IN(SELECT a_traiter.ordonnance_id FROM a_traiter, ordonnance, action WHERE action.ordonnance_id=ordonnance.id AND action.participant_id IN (SELECT cped_id FROM sousordonnateur WHERE sousordonnateur.id='" + getId() + "') AND a_traiter.ordonnance_id=ordonnance.id AND a_traiter.acteur_id != '" + getId() + "' AND (etat='2' AND a_traiter.acteur_id IN (SELECT comptable_id FROM ordonnance)))";
+				//String query = "SELECT ordonnance_id FROM a_traiter WHERE a_traiter.acteur_id='" + getId() + "' AND ordonnance_id NOT IN(SELECT ordonnance_id FROM a_traiter, ordonnance WHERE ordonnance_id=id AND a_traiter.acteur_id != '" + getId() + "' AND (etat='2' AND a_traiter.acteur_id IN (SELECT comptable_id FROM ordonnance)))";
+				//String query = "SELECT ordonnance_id FROM a_traiter WHERE a_traiter.acteur_id='" + getId() + "' AND ordonnance_id NOT IN(SELECT ordonnance_id FROM a_traiter, ordonnance WHERE ordonnance_id=id AND a_traiter.acteur_id != '" + getId() + "' AND (a_traiter.acteur_id IN (SELECT initiateur_id FROM ordonnance) AND etat='3') OR (etat='2' AND a_traiter.acteur_id IN (SELECT comptable_id FROM ordonnance)))";
+				res2 = s2.executeQuery(query);
+				while(res2.next())
+				{
+				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
+				    try
+				    {
+				        ordon.chargeParId(res2.getInt("ordonnance_id"));
+				    }
+				    catch(Exception e)
+				    {
+				        
+				    }
+					addATraiter(ordon);
+				}
+			}
+		    catch (SQLException e)
+			{
+		        System.out.println(e.getMessage());
+			}
+			finally
+			{
+				if (res2 != null)
+				{
+					try {
+						res2.close();
+					} catch (SQLException e) {}
+					res2 = null;
+				}
+				if (s2 != null) {
+					try {
+						s2.close();
+					} catch (SQLException e) {}
+					s2 = null;
+				}
+				if (conn2 != null) {
+					try {
+						conn2.close();
+					} catch (SQLException e) {}
+					conn2 = null;
+				}
+			}*/
 		}
 		catch (SQLException e)
 		{
@@ -895,7 +947,7 @@ public class SousOrdonnateur extends Acteur {
 		}
 		finally
 		{
-			if (res != null)
+			if (res2 != null)
 			{
 				try {
 					res2.close();
@@ -945,7 +997,7 @@ public class SousOrdonnateur extends Acteur {
 		}
 		finally
 		{
-			if (res != null)
+			if (res2 != null)
 			{
 				try {
 					res2.close();
@@ -976,7 +1028,7 @@ public class SousOrdonnateur extends Acteur {
 		{
 	        conn = ds.getConnection();
 			s = conn.createStatement();
-			String q ="SELECT DISTINCT ordonnance_id FROM action WHERE ordonnance_id='" + ordon.getId() + "' AND ordonnance_id IN (SELECT ordonnance_id FROM action WHERE type='1' AND participant_id='" + getCped().getId() + "')";
+			String q ="SELECT ordonnance_id FROM action WHERE ordonnance_id='" + ordon.getId() + "' AND ordonnance_id IN (SELECT ordonnance_id FROM action WHERE type='1' AND participant_id='" + getCped().getId() + "')";
 			//String q = "SELECT ordonnance_id FROM action WHERE ordonnance_id IN (SELECT ordonnance_id FROM action WHERE type='1' AND participant_id='" + getCped().getId() + "')";
 			res = s.executeQuery(q);
 			if (res.next())
