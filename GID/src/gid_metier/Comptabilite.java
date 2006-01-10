@@ -27,6 +27,19 @@ public class Comptabilite extends ObjetPersistant {
  * @poseidon-type gid_metier.Operation
  */
     private java.util.Vector operation = new java.util.Vector();
+    
+    public Comptabilite() 
+    {
+        try 
+        {
+            Context initCtx = new InitialContext();
+            ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+        }
+        catch (Exception e)
+        {
+            
+        }
+    }
 
 /**
  * <p>Retourne le solde de la comptabilit&eacute;</p>
@@ -90,8 +103,9 @@ public class Comptabilite extends ObjetPersistant {
 		{
 	        conn = ds.getConnection();
 			s = conn.createStatement();
-			String query;
-			res = s.executeQuery("SELECT * FROM comptabilite WHERE id='" + id + "'");
+			String query = "SELECT * FROM comptabilite WHERE id='" + id + "'" ;
+			System.out.println(query);
+			res = s.executeQuery(query);
 			if (res.next())
 			{
 			    setId(res.getInt("id"));
@@ -99,12 +113,12 @@ public class Comptabilite extends ObjetPersistant {
 			    try
 				{
 				    conn2 = ds.getConnection();
-					s2 = conn.createStatement();
+					s2 = conn2.createStatement();
 					res2 = s2.executeQuery("SELECT id FROM operation WHERE comptabilite_id='" + getId() + "'");
 					while(res2.next())
 					{
 					    Operation op = new Operation();
-					    op.chargeParIdCompta(res.getInt("id"));
+					    op.chargeParIdCompta(res2.getInt("id"));
 					    addOperation(op);
 					}
 				}
@@ -236,9 +250,8 @@ public class Comptabilite extends ObjetPersistant {
  */
     public void sauver(Acteur acteur) throws Exception
     {
-        System.out.println("sauveracteur");
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+       /* Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -292,8 +305,8 @@ public class Comptabilite extends ObjetPersistant {
  */
     public void supprimer() throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+        /*Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -338,8 +351,8 @@ public class Comptabilite extends ObjetPersistant {
  */
     public Vector retournerTous() throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+        /*Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query="";
 		Vector tous = new Vector();
 	    try

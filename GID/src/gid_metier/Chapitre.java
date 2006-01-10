@@ -30,6 +30,12 @@ public class Chapitre extends ObjetPersistant {
  * 
  */
     private gid_metier.LigneBudgetaire ligneBudgetaire;
+    
+    public Chapitre() throws Exception
+    {
+        Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+    }
 
 /**
  * <p>Retourne le code du chapitre</p>
@@ -95,7 +101,6 @@ public class Chapitre extends ObjetPersistant {
         Context initCtx = new InitialContext();
 		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
 		String query="";
-		
 		 try
 		 {
 	        conn = ds.getConnection();
@@ -147,8 +152,8 @@ public class Chapitre extends ObjetPersistant {
  */
     public void sauver() throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+        /*Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query="";
 	    try
 		{
@@ -202,8 +207,8 @@ public class Chapitre extends ObjetPersistant {
  */
     public void supprimer() throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+        /*Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query="";
 	    try
 		{
@@ -250,8 +255,8 @@ public class Chapitre extends ObjetPersistant {
  */
     public java.util.Vector retournerTous() throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+        /*Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query="";
 		Vector tous = new Vector();
 	    try

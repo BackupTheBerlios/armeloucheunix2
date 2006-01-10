@@ -20,6 +20,12 @@ public class LigneBudgetaire extends ObjetPersistant {
  */
     private String libelle;
 
+    
+    public LigneBudgetaire() throws Exception
+    {
+        Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+    }
 /**
  * <p>Retourne le libelle de la ligne budgetaire</p>
  * 
@@ -49,8 +55,8 @@ public class LigneBudgetaire extends ObjetPersistant {
  */
     public java.util.Vector retournerChapitres() throws Exception {        
         Vector tous = new Vector();
-    	Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+    	/*Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -105,8 +111,8 @@ public class LigneBudgetaire extends ObjetPersistant {
  */
     public void chargeParId(int id) throws Exception
     {
-    	Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+    	/*Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -155,8 +161,8 @@ public class LigneBudgetaire extends ObjetPersistant {
  */
     public void sauver() throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+       /* Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query="";
 	    try
 		{
@@ -210,8 +216,8 @@ public class LigneBudgetaire extends ObjetPersistant {
  */
     public void supprimer() throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+        /*Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query="";
 	    try
 		{
@@ -259,8 +265,8 @@ public class LigneBudgetaire extends ObjetPersistant {
  */
     public final java.util.Vector retournerTous() throws Exception{
         Vector tous = new Vector();
-    	Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+    	/*Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();

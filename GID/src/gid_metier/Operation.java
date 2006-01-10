@@ -40,6 +40,12 @@ public class Operation extends ObjetPersistant {
 
     private OrdonnanceDelegation ordon;
     
+    public Operation() throws Exception
+    {
+        Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+    }
+    
     public OrdonnanceDelegation getOrdonnance()
     {
         return ordon;
@@ -263,8 +269,8 @@ public class Operation extends ObjetPersistant {
      */
     public void sauver() throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+        /*Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query="";
 	    try
 		{
@@ -320,8 +326,8 @@ public class Operation extends ObjetPersistant {
  */
     public void supprimer() throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+       /* Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -366,8 +372,8 @@ public class Operation extends ObjetPersistant {
  */
     public Vector retournerTous() throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+       /* Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query="";
 		Vector tous = new Vector();
 	    try
@@ -411,6 +417,4 @@ public class Operation extends ObjetPersistant {
 		}  
 		return tous;
     }
-
-    
  }

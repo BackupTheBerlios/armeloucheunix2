@@ -27,6 +27,19 @@ public class SousOrdonnateur extends Acteur {
  */
     private gid_metier.TR_TP tr_tp;
 
+    
+    public SousOrdonnateur()
+    {
+        try 
+        {
+            Context initCtx = new InitialContext();
+            ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+        }
+        catch (Exception e )
+        {
+            
+        }
+    }
     /** @poseidon-generated */
     public gid_metier.CPED getCped() {
         return cped;
@@ -166,8 +179,8 @@ public class SousOrdonnateur extends Acteur {
  */
     public void sauver() throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+       /* Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -220,8 +233,8 @@ public class SousOrdonnateur extends Acteur {
  */
     public void supprimer() throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+       /* Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -267,8 +280,8 @@ public class SousOrdonnateur extends Acteur {
     public java.util.Vector retournerTous() throws Exception
     {
         Vector tous = new Vector();
-    	Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+    	/*Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -323,8 +336,8 @@ public class SousOrdonnateur extends Acteur {
  */
     public void prendreOrdonnanceEnCharge(OrdonnanceDelegation ordonnance) throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+      /*  Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -370,8 +383,8 @@ public class SousOrdonnateur extends Acteur {
     public void majComptabilite(OrdonnanceDelegation ordonnance) throws Exception
     {
         Operation operation = new Operation();
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+       /* Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -442,8 +455,8 @@ public class SousOrdonnateur extends Acteur {
  */
     public void transmettreOrdonnance(OrdonnanceDelegation ordonnance, Acteur destinataire) throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+        /*Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -678,8 +691,8 @@ public class SousOrdonnateur extends Acteur {
     public boolean verifOrdoEnvoye(OrdonnanceDelegation ordon)throws NamingException
     {
         boolean r=false;
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+        /*Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();

@@ -124,6 +124,19 @@ public class OrdonnanceDelegation extends ObjetPersistant {
  */
     private java.util.Collection action = new java.util.TreeSet();
 
+    
+    public OrdonnanceDelegation()
+    {
+        try 
+        {
+            Context initCtx = new InitialContext();
+            ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+        }
+        catch (Exception e )
+        {
+            
+        }
+    }
 /**
  * <p>Retourne le libelle</p>
  * 
@@ -413,8 +426,8 @@ public class OrdonnanceDelegation extends ObjetPersistant {
  */
     public void chargeParId(int id) throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+        /*Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query="";
 		
 		 try
@@ -527,8 +540,8 @@ public class OrdonnanceDelegation extends ObjetPersistant {
     
     public void clore() throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+       /* Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query="UPDATE ordonnance set etat='4' WHERE id='" + getId() + "'";
 		try
 		{
@@ -572,8 +585,8 @@ public class OrdonnanceDelegation extends ObjetPersistant {
  */
     public void sauver() throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+       /* Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query="";
 		
 		if(getId()==0)
@@ -688,8 +701,8 @@ public class OrdonnanceDelegation extends ObjetPersistant {
  */
     public void supprimer() throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+       /* Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -735,8 +748,8 @@ public class OrdonnanceDelegation extends ObjetPersistant {
     public java.util.Vector retournerTous() throws Exception
     {
         Vector tous = new Vector();
-    	Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+    	/*Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();

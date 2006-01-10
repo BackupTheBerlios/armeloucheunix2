@@ -38,6 +38,19 @@ public class Consommable extends ObjetPersistant {
  */
     private int quantite;
 
+    
+    public Consommable() 
+    {
+        try 
+        {
+            Context initCtx = new InitialContext();
+            ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+        }
+        catch (Exception e )
+        {
+            
+        }
+    }
 /**
  * <p>Retourne le libelle du consommable</p>
  * 
@@ -182,8 +195,8 @@ public class Consommable extends ObjetPersistant {
  */
     public void sauver() throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+        /*Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query="";
 	    try
 		{
@@ -237,8 +250,8 @@ public class Consommable extends ObjetPersistant {
  */
     public void supprimer() throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+        /*Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query="";
 	    try
 		{
@@ -287,8 +300,8 @@ public class Consommable extends ObjetPersistant {
     public java.util.Vector retournerTous() throws Exception
     {
         Vector tous = new Vector();
-    	Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+    	/*Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();

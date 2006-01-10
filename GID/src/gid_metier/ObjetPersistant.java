@@ -2,7 +2,8 @@
 package gid_metier;
 
 import java.sql.ResultSet;
-
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 /**

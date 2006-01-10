@@ -511,6 +511,23 @@ public class RequeteSql extends HttpServlet
 			    	{
 			    		case 1:
 			    		    {
+			    		    	if (request.getParameter("modOrdonnance").equalsIgnoreCase("non"))
+			    		    	{
+			    		    	    try
+			    			        {
+			    			            ordonnateur.retirerOrdonnanceDelegation(ordon);
+			    			            gotoPage("/ordonnance_retiree.jsp",request,response);
+			    			            
+			    			        }
+			    			        catch (Exception e)
+			    			        {
+			    			            System.out.println(e.getMessage());
+			    			        }
+			    		    	}
+			    		    	else
+			    		    	{
+			    		    	    
+			    		    	}
 			    		    	break;
 			    		    }
 			    		case 2:
@@ -826,7 +843,9 @@ public class RequeteSql extends HttpServlet
 			    {
 			        try
 			        {
+			            
 			            ordonnateur.retirerOrdonnanceDelegation((OrdonnanceDelegation)ordonnateur.getEnCours().elementAt(new Integer(request.getParameter("place")).intValue()));
+			            ordonnateur.removeEnCours((OrdonnanceDelegation)ordonnateur.getEnCours().elementAt(new Integer(request.getParameter("place")).intValue()));
 			        }
 			        catch (Exception e)
 			        {
@@ -837,13 +856,25 @@ public class RequeteSql extends HttpServlet
 			    {
 			        try
 			        {
+			           
 			            ordonnateur.retirerOrdonnanceDelegation((OrdonnanceDelegation)ordonnateur.getATraiters().elementAt(new Integer(request.getParameter("place")).intValue()));
+			            ordonnateur.removeATraiter((OrdonnanceDelegation)ordonnateur.getATraiters().elementAt(new Integer(request.getParameter("place")).intValue()));
 			        }
 			        catch (Exception e)
 			        {
 			            System.out.println(e.getMessage());
 			        }
 			    }
+			    Comptabilite comp = new Comptabilite();
+			    try
+			    {
+			        comp.chargeParIdActeur(ordonnateur.getId());
+			    }
+			    catch(Exception e)
+			    {
+			        
+			    }
+			    ordonnateur.setComptaPerso(comp);
 			    gotoPage("/ordonnance_retiree.jsp",request,response);
 			}
 		}

@@ -22,6 +22,12 @@ public class Ordonnateur extends Acteur {
  * 
  */
     private gid_metier.CCED controleur;
+    
+    public Ordonnateur() throws Exception
+    {
+        Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+    }
 
     /** @poseidon-generated */
     public gid_metier.CCED getControleur() {
@@ -185,8 +191,8 @@ public class Ordonnateur extends Acteur {
  */
     public void sauver() throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+        /*Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -239,8 +245,8 @@ public class Ordonnateur extends Acteur {
  */
     public void supprimer() throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+        /*Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -286,8 +292,8 @@ public class Ordonnateur extends Acteur {
     public Vector retournerTous() throws Exception
     {
         Vector tous = new Vector();
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+       /* Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query = "";
 	    try
 		{
@@ -344,8 +350,8 @@ public class Ordonnateur extends Acteur {
  */
     public void prendreOrdonnanceEnCharge(OrdonnanceDelegation ordonnance) throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+        /*Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -391,8 +397,8 @@ public class Ordonnateur extends Acteur {
     public void majComptabilite(OrdonnanceDelegation ordonnance) throws Exception
     {
         Operation operation = new Operation();
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+        /*Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -464,8 +470,8 @@ public class Ordonnateur extends Acteur {
  */
     public void transmettreOrdonnance(OrdonnanceDelegation ordonnance, Acteur destinataire) throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+       /* Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		boolean deja_a_traiter = false;
 		String query;
 		try
@@ -560,7 +566,6 @@ public class Ordonnateur extends Acteur {
 
         Context initCtx = new InitialContext();
 		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
-	    
 		try
 		{
 	        conn = ds.getConnection();
@@ -740,7 +745,8 @@ public class Ordonnateur extends Acteur {
  * @param ordonnance la nouvelle ordonnance
  * @throws Si la vérification n'est pas satisfaite ou si les acces au SGBD ont retournés des erreurs
  */
-    public void saisirOrdonnanceDelegation(gid_metier.OrdonnanceDelegation ordonnance) throws Exception {
+    public void saisirOrdonnanceDelegation(gid_metier.OrdonnanceDelegation ordonnance) throws Exception
+    {
         ordonnance.setLibelle(ordonnance.getLibelle().replaceAll("'", "&rsquo;").substring(0, (int)java.lang.Math.min(ordonnance.getLibelle().replaceAll("'", "&rsquo").length(), 29)));
         ordonnance.sauver();
         GregorianCalendar dateG = new GregorianCalendar();
@@ -804,20 +810,20 @@ public class Ordonnateur extends Acteur {
  * @param ordonnance L'ordonnance à supprimer
  * @throws Une exception si la suppression échoue
  */
-    public void retirerOrdonnanceDelegation(gid_metier.OrdonnanceDelegation ordonnance) throws Exception {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
-        System.out.println("itptptzepr");
+    public void retirerOrdonnanceDelegation(gid_metier.OrdonnanceDelegation ordonnance) throws Exception
+    {
         String q="";
         try
 		{
 		    conn = ds.getConnection();
 			s = conn.createStatement();
-			q = "SELECT comptabilite_id, id FROM operation WHERE ordonnance_id='" + ordonnance.getId() + "'";
+			q = "SELECT DISTINCT comptabilite_id, id FROM operation WHERE ordonnance_id='" + ordonnance.getId() + "'";
 			res = s.executeQuery(q);
+			int i =0;
 			System.out.println(q);
 			while(res.next())
 			{
+			    System.out.println(i++);
 			    Operation operation = new Operation();
 			    operation.chargeParId(res.getInt("id"));
 			    Comptabilite compta = new Comptabilite();
@@ -929,6 +935,41 @@ public class Ordonnateur extends Acteur {
 		}
 		System.out.println(q);
 		q = "DELETE FROM consomme WHERE ordonnance_id='" + ordonnance.getId() + "'";
+		System.out.println(q);
+		try
+		{
+		    conn = ds.getConnection();
+			s = conn.createStatement();
+		    s.executeQuery(q);
+		}
+		catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}
+		q = "DELETE FROM operation WHERE ordonnance_id='" + ordonnance.getId() + "'";
+		System.out.println(q);
 		try
 		{
 		    conn = ds.getConnection();

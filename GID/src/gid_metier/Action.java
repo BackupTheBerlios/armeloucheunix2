@@ -145,6 +145,11 @@ public class Action extends ObjetPersistant {
     public void setOrdonnance(gid_metier.OrdonnanceDelegation ordonnance) {
         this.ordonnance = ordonnance;
     }
+   public Action()throws Exception
+   {
+       Context initCtx = new InitialContext();
+       ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+   }
     
 /**
  * <p>Charge (depuis le SGBD) l'objet correspondant a l'identifiant pass&eacute; en param&egrave;tre.</p>
@@ -157,8 +162,6 @@ public class Action extends ObjetPersistant {
  */
     public void chargeParId(int id) throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
 	    try
 		{
 	        conn = ds.getConnection();
@@ -245,8 +248,8 @@ public class Action extends ObjetPersistant {
  */
     public void sauver() throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+        /*Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query="";
 	    try
 		{
@@ -300,8 +303,8 @@ public class Action extends ObjetPersistant {
  */
     public void supprimer() throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+        /*Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query="";
 	    try
 		{
@@ -348,8 +351,8 @@ public class Action extends ObjetPersistant {
  */
     public Vector retournerTous() throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+        /*Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query="";
 		Vector tous = new Vector();
 	    try
