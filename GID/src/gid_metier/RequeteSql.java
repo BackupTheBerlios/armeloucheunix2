@@ -685,6 +685,10 @@ public class RequeteSql extends HttpServlet
 				    	    act.sauver();
 				            tr_tp.addArchives(ordon);
 			            }
+			            else
+			            {
+			                gotoPage("/pas-clore.jsp",request,response);
+			            }
 			    	}
 			    	catch(Exception e)
 			    	{
@@ -840,6 +844,7 @@ public class RequeteSql extends HttpServlet
 			            System.out.println(e.getMessage());
 			        }
 			    }
+			    gotoPage("/ordonnance_retiree.jsp",request,response);
 			}
 		}
 	}
