@@ -753,7 +753,7 @@ public class RequeteSql extends HttpServlet
 			    ordonnance.setInitiateur(ordonnateur);
 			    ordonnance.setEtat(1);
 			    GregorianCalendar date = new GregorianCalendar();
-			    ordonnance.setDate(new Date(date.get(GregorianCalendar.YEAR)-1900, date.get(GregorianCalendar.MONTH), date.get(GregorianCalendar.DAY_OF_MONTH)));
+			    ordonnance.setDate(new java.util.Date(date.get(GregorianCalendar.YEAR) - 1900,date.get(GregorianCalendar.MONTH), date.get(GregorianCalendar.DAY_OF_MONTH)));
 			    
 			    SousOrdonnateur so = new SousOrdonnateur();
 			    try 
@@ -788,6 +788,7 @@ public class RequeteSql extends HttpServlet
 			    try
 			    {
 			        ordonnateur.saisirOrdonnanceDelegation(ordonnance);
+			        ordonnateur.majComptabilite(ordonnance);
 			        ordonnateur.transmettreOrdonnance(ordonnance,ordonnateur.getControleur());
 			    }
 			    catch(Exception e)

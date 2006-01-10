@@ -190,6 +190,11 @@ public class Comptabilite extends ObjetPersistant {
 			        this.addOperation(op);
 			    }
 			}
+			else
+			{
+			    setId(0);
+			    setSolde(0);
+			}
 		}
 	    catch (SQLException e)
 		{
@@ -228,8 +233,9 @@ public class Comptabilite extends ObjetPersistant {
  * 
  * @throws Si une erreur survient pendant la transaction
  */
-    public void sauver(int acteur_id) throws Exception
+    public void sauver(Acteur acteur) throws Exception
     {
+        System.out.println("sauveracteur");
         Context initCtx = new InitialContext();
 		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
 	    try
@@ -239,11 +245,11 @@ public class Comptabilite extends ObjetPersistant {
 			String query;
 			if (getId()==0)
 			{
-			    query = "INSERT INTO comptabilite(solde,acteur_id) VALUES ('" + getSolde() + "', '" + acteur_id + "')";
+			    query = "INSERT INTO comptabilite(solde,acteur_id) VALUES ('" + getSolde() + "', '" + acteur.getId() + "')";
 			}
 			else
 			{
-			    query = "UPDATE comptabilite set solde = '" + getSolde() + "', acteur_id='" + acteur_id + "' WHERE id='" + getId() + "'";
+			    query = "UPDATE comptabilite set solde = '" + getSolde() + "', acteur_id='" + acteur.getId() + "' WHERE id='" + getId() + "'";
 			}
 			res = s.executeQuery(query);
 		}
@@ -273,6 +279,7 @@ public class Comptabilite extends ObjetPersistant {
 				conn = null;
 			}
 		}
+		chargeParIdActeur(acteur.getId());
     }
 
 /**

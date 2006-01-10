@@ -45,15 +45,9 @@ public class TG extends Acteur {
 				setNom(res.getString("nom"));
 				setPrenom(res.getString("prenom"));
 				
-			    Comptabilite compta = new Comptabilite();
-			    try
-			    {
-			        compta.chargeParIdActeur(getId());
-			    }
-			    catch(Exception e)
-			    {
-			        
-			    }
+				Comptabilite compta = new Comptabilite();
+			    compta.chargeParIdActeur(getId());
+			    setComptaPerso(compta);
 			 }
 			
 			 try
@@ -64,14 +58,7 @@ public class TG extends Acteur {
 				while(res2.next())
 				{
 				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
-				    try
-				    {
-				        ordon.chargeParId(res2.getInt("ordonnance_id"));
-				    }
-				    catch(Exception e)
-				    {
-				        
-				    }
+				    ordon.chargeParId(res2.getInt("ordonnance_id"));
 					addATraiter(ordon);
 				}
 			}
@@ -102,134 +89,6 @@ public class TG extends Acteur {
 				}
 			}
 		}
-	    /*try
-		{
-	        conn = ds.getConnection();
-			s = conn.createStatement();
-			res = s.executeQuery("SELECT tg.*, comptabilite.id as comptabilite_id, solde , acteur_id FROM tg  LEFT JOIN comptabilite ON (acteur_id = tg.id)  WHERE tg.id='" + id + "'");
-			if (res.next())
-			{
-			    this.setId(res.getInt("id"));
-				this.setLogin(res.getString("login"));
-				this.setMdp(res.getString("mdp"));
-				this.setNom(res.getString("nom"));
-				this.setPrenom(res.getString("prenom"));
-				if(res.getString("comptabilite_id")!=null)
-				{
-				    Comptabilite compta = new Comptabilite();
-				    compta.setId(res.getInt("comptabilite_id"));
-				    compta.setSolde(res.getInt("solde"));
-				    try
-					{
-					    res = s.executeQuery("SELECT * FROM operation WHERE comptabilite_id='" + res.getInt("comptabilite_id") + "' ORDER BY date DESC");
-					    while(res.next())
-					    {
-					        Operation op = new Operation();
-					        op.setId(res.getInt("id"));
-					        op.setLibelle(res.getString("libelle"));
-					        op.setMontant(res.getInt("montant"));
-					        op.setDate(res.getDate("date"));
-					        op.setType(res.getString("type"));
-					        compta.addOperation(op);
-					    }
-					    this.setComptaPerso(compta);
-					}
-				    catch (SQLException e)
-					{
-				        System.out.println(e.getMessage()+ "tutu");
-					}
-					finally
-					{
-						if (res != null)
-						{
-							try {
-								res.close();
-							} catch (SQLException e) {}
-							res = null;
-						}
-						if (s != null) {
-							try {
-								s.close();
-							} catch (SQLException e) {}
-							s = null;
-						}
-						if (conn != null) {
-							try {
-								conn.close();
-							} catch (SQLException e) {}
-							conn = null;
-						}
-					}
-				}
-				try
-				{
-				    conn = ds.getConnection();
-					s = conn.createStatement();
-				    System.out.println(getId());
-				    res = s.executeQuery("SELECT ordonnance.*, o.nom as nom_initiateur, o.prenom as prenom_initiateur, d.nom as nom_delegataire, d.prenom as prenom_delegataire, tg.nom as nom_comptable, tg.prenom as prenom_comptable FROM a_traiter, ordonnance, ordonnateur o, sousordonnateur d, tg WHERE a_traiter.ordonnance_id=ordonnance.id AND a_traiter.acteur_id='" + getId() + "' AND o.id=ordonnance.initiateur_id AND d.id=ordonnance.delegataire_id AND tg.id=ordonnance.comptable_id");
-					while(res.next())
-					{
-					    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
-						Ordonnateur initiateur = new Ordonnateur();
-						SousOrdonnateur delegataire = new SousOrdonnateur();
-						//int deleg = res.getInt("delegataire_id");
-						ordon.setId(res.getInt("id"));
-						ordon.setLibelle(res.getString("libelle"));
-						ordon.setDate(res.getDate("date"));
-						ordon.setMontant(res.getInt("montant"));
-						ordon.setEtat(res.getInt("etat"));
-						ordon.setVisaCCED(res.getBoolean("visacced"));
-						ordon.setRefVisaCCED(res.getString("ref_visacced"));
-						ordon.setDateVisaCCED(res.getDate("date_visacced"));
-						ordon.setVisaTG(res.getBoolean("visatg"));
-						ordon.setRefVisaTG(res.getString("ref_visatg"));
-						ordon.setDateVisaTG(res.getDate("date_visatg"));
-						
-						initiateur.setNom(res.getString("nom_initiateur"));
-						initiateur.setPrenom(res.getString("prenom_initiateur"));
-						ordon.setInitiateur(initiateur);
-						
-						delegataire.setNom(res.getString("nom_delegataire"));
-						delegataire.setPrenom(res.getString("prenom_delegataire"));
-						ordon.setDelegataire(delegataire);
-						
-						comptable.setId(res.getInt("comptable_id"));
-						comptable.setNom(res.getString("nom_comptable"));
-						comptable.setPrenom(res.getString("prenom_comptable"));
-						ordon.setComptable(comptable);
-						
-						addATraiter(ordon);
-					}
-				}
-			    catch (SQLException e)
-				{
-			        System.out.println(e.getMessage()+ "titi");
-				}
-				finally
-				{
-					if (res != null)
-					{
-						try {
-							res.close();
-						} catch (SQLException e) {}
-						res = null;
-					}
-					if (s != null) {
-						try {
-							s.close();
-						} catch (SQLException e) {}
-						s = null;
-					}
-					if (conn != null) {
-						try {
-							conn.close();
-						} catch (SQLException e) {}
-						conn = null;
-					}
-				}
-
-			}
-		}*/
 	    catch (SQLException e)
 		{
 	        System.out.println(e.getMessage());
@@ -282,7 +141,6 @@ public class TG extends Acteur {
 			{
 			    query = "UPDATE tg set login = '" + getLogin() + "', mdp = '" + getMdp() + "', nom = '" + getNom() + "', prenom = '" + getPrenom() + "' WHERE id='" + getId() + "'";
 			}
-			System.out.println(query);
 			res = s.executeQuery(query);
 		}
 	    catch (SQLException e)
@@ -469,7 +327,20 @@ public class TG extends Acteur {
  * 
  * @param ordonnance l'ordonnance qui mouvemente la comptabilité
  */
-    public void majComptabilite(OrdonnanceDelegation ordonnance) throws Exception{}
+    public void majComptabilite(OrdonnanceDelegation ordonnance) throws Exception
+    {
+        Operation operation = new Operation();
+        operation.setLibelle(ordonnance.getLibelle());
+        operation.setMontant(ordonnance.getMontant());
+        GregorianCalendar date = new GregorianCalendar();
+        operation.setDate(new java.util.Date(date.get(GregorianCalendar.YEAR) - 1900, date.get(GregorianCalendar.MONTH), date.get(GregorianCalendar.DAY_OF_MONTH)));
+        operation.setType("C");
+        operation.setComptabilite(getComptaPerso());
+        getComptaPerso().addOperation(operation);
+        getComptaPerso().setSolde(getComptaPerso().getSolde() + operation.getMontant());
+        getComptaPerso().sauver(this);
+        operation.sauver();
+    }
 
 /**
  * <p>Transmet l'ordonnance de d&eacute;l&eacute;gation &agrave; un autre acteur en la pla&ccedil;ant dans sa liste des ordonnances aTraiter.</p>
@@ -529,208 +400,10 @@ public class TG extends Acteur {
     }
 
 
-	public void authentifie(String login, String password) throws NamingException
+	public void authentifie(String login, String password) throws NamingException, Exception
 	{
 	    Context initCtx = new InitialContext();
 		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
-	    /*try
-		{
-	        conn = ds.getConnection();
-			s = conn.createStatement();
-			res = s.executeQuery("SELECT tg.*, comptabilite.id as comptabilite_id, solde , acteur_id FROM tg  LEFT JOIN comptabilite ON (acteur_id = tg.id)  WHERE login='" + login + "' AND mdp='" + password + "'");
-			if (res.next())
-			{
-			    this.setId(res.getInt("id"));
-				this.setLogin(res.getString("login"));
-				this.setMdp(res.getString("mdp"));
-				this.setNom(res.getString("nom"));
-				this.setPrenom(res.getString("prenom"));
-				if(res.getString("comptabilite_id")!=null)
-				{
-				    Comptabilite compta = new Comptabilite();
-				    compta.setId(res.getInt("comptabilite_id"));
-				    compta.setSolde(res.getInt("solde"));
-				    try
-					{
-					    res = s.executeQuery("SELECT * FROM operation WHERE comptabilite_id='" + res.getInt("comptabilite_id") + "' ORDER BY date DESC");
-					    while(res.next())
-					    {
-					        Operation op = new Operation();
-					        op.setId(res.getInt("id"));
-					        op.setLibelle(res.getString("libelle"));
-					        op.setMontant(res.getInt("montant"));
-					        op.setDate(res.getDate("date"));
-					        op.setType(res.getString("type"));
-					        compta.addOperation(op);
-					    }
-					    this.setComptaPerso(compta);
-					}
-				    catch (SQLException e)
-					{
-				        System.out.println(e.getMessage()+ "tutu");
-					}
-					finally
-					{
-						if (res != null)
-						{
-							try {
-								res.close();
-							} catch (SQLException e) {}
-							res = null;
-						}
-						if (s != null) {
-							try {
-								s.close();
-							} catch (SQLException e) {}
-							s = null;
-						}
-						if (conn != null) {
-							try {
-								conn.close();
-							} catch (SQLException e) {}
-							conn = null;
-						}
-					}
-				}
-				try
-				{
-				    conn = ds.getConnection();
-					s = conn.createStatement();
-				    System.out.println(getId());
-				    res = s.executeQuery("SELECT ordonnance.*, o.nom as nom_initiateur, o.prenom as prenom_initiateur, d.nom as nom_delegataire, d.prenom as prenom_delegataire, tg.nom as nom_comptable, tg.prenom as prenom_comptable FROM a_traiter, ordonnance, ordonnateur o, sousordonnateur d, tg WHERE a_traiter.ordonnance_id=ordonnance.id AND a_traiter.acteur_id='" + getId() + "' AND o.id=ordonnance.initiateur_id AND d.id=ordonnance.delegataire_id AND tg.id=ordonnance.comptable_id");
-					while(res.next())
-					{
-					    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
-						Ordonnateur initiateur = new Ordonnateur();
-						SousOrdonnateur delegataire = new SousOrdonnateur();
-						TG comptable = new TG();
-						
-						//int deleg = res.getInt("delegataire_id");
-						ordon.setId(res.getInt("id"));
-						ordon.setLibelle(res.getString("libelle"));
-						ordon.setDate(res.getDate("date"));
-						ordon.setMontant(res.getInt("montant"));
-						ordon.setEtat(res.getInt("etat"));
-						ordon.setVisaCCED(res.getBoolean("visacced"));
-						ordon.setRefVisaCCED(res.getString("ref_visacced"));
-						ordon.setDateVisaCCED(res.getDate("date_visacced"));
-						ordon.setVisaTG(res.getBoolean("visatg"));
-						ordon.setRefVisaTG(res.getString("ref_visatg"));
-						ordon.setDateVisaTG(res.getDate("date_visatg"));
-						
-						initiateur.setId(res.getInt("initiateur_id"));
-						initiateur.setNom(res.getString("nom_initiateur"));
-						initiateur.setPrenom(res.getString("prenom_initiateur"));
-						ordon.setInitiateur(initiateur);
-						
-						delegataire.setId(res.getInt("delegataire_id"));
-						delegataire.setNom(res.getString("nom_delegataire"));
-						delegataire.setPrenom(res.getString("prenom_delegataire"));
-						ordon.setDelegataire(delegataire);
-
-						comptable.setId(res.getInt("comptable_id"));
-						comptable.setNom(res.getString("nom_comptable"));
-						comptable.setPrenom(res.getString("prenom_comptable"));
-						ordon.setComptable(comptable);
-						try
-						{
-						    conn2 = ds.getConnection();
-							s2 = conn.createStatement();
-							res2 = s2.executeQuery("SELECT * FROM consomme,consommable  WHERE ordonnance_id='" + ordon.getId() + "' AND consommable_id=id");
-							while(res2.next())
-							{
-							    Consommable conso = new Consommable();
-							    conso.setId(res2.getInt("id"));
-							    conso.setLibelle(res2.getString("libelle"));
-							    conso.setPrix(res2.getInt("prix"));
-							    conso.setQuantite(res2.getInt("quantite"));
-							    ordon.addConsommable(conso);
-							}
-						}
-						catch (SQLException e)
-						{
-					        System.out.println(e.getMessage());
-						}
-						finally
-						{
-							if (res2 != null)
-							{
-								try {
-									res2.close();
-								} catch (SQLException e) {}
-								res2 = null;
-							}
-							if (s2 != null) {
-								try {
-									s2.close();
-								} catch (SQLException e) {}
-								s2 = null;
-							}
-							if (conn2 != null) {
-								try {
-									conn2.close();
-								} catch (SQLException e) {}
-								conn2 = null;
-							}
-						}
-						this.addATraiter(ordon);
-					}
-				}
-			    catch (SQLException e)
-				{
-			        System.out.println(e.getMessage()+ "titi");
-				}
-				finally
-				{
-					if (res != null)
-					{
-						try {
-							res.close();
-						} catch (SQLException e) {}
-						res = null;
-					}
-					if (s != null) {
-						try {
-							s.close();
-						} catch (SQLException e) {}
-						s = null;
-					}
-					if (conn != null) {
-						try {
-							conn.close();
-						} catch (SQLException e) {}
-						conn = null;
-					}
-				}
-
-			}
-		}
-	    catch (SQLException e)
-		{
-	        System.out.println(e.getMessage()+ "tata");
-		}
-		finally
-		{
-			if (res != null)
-			{
-				try {
-					res.close();
-				} catch (SQLException e) {}
-				res = null;
-			}
-			if (s != null) {
-				try {
-					s.close();
-				} catch (SQLException e) {}
-				s = null;
-			}
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {}
-				conn = null;
-			}
-		}*/
 		try
 		{
 	        conn = ds.getConnection();
@@ -745,14 +418,8 @@ public class TG extends Acteur {
 				setPrenom(res.getString("prenom"));
 				
 			    Comptabilite compta = new Comptabilite();
-			    try
-			    {
-			        compta.chargeParIdActeur(getId());
-			    }
-			    catch(Exception e)
-			    {
-			        
-			    }
+			    compta.chargeParIdActeur(getId());
+			    setComptaPerso(compta);
 			 }
 			
 			 try
@@ -763,14 +430,7 @@ public class TG extends Acteur {
 				while(res2.next())
 				{
 				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
-				    try
-				    {
-				        ordon.chargeParId(res2.getInt("ordonnance_id"));
-				    }
-				    catch(Exception e)
-				    {
-				        
-				    }
+				    ordon.chargeParId(res2.getInt("ordonnance_id"));
 					addATraiter(ordon);
 				}
 			}
@@ -838,16 +498,8 @@ public class TG extends Acteur {
 			while(res2.next())
 			{
 			    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
-			    try
-			    {
-			        ordon.chargeParId(res2.getInt("id"));
-			    }
-			    catch(Exception e)
-			    {
-			        System.out.println(e.getMessage());
-			    }
+			    ordon.chargeParId(res2.getInt("id"));
 				addArchives(ordon);
-				System.out.println(ordon.getId());
 			}
 		}
 	    catch (SQLException e)
@@ -881,23 +533,14 @@ public class TG extends Acteur {
 		    conn2 = ds.getConnection();
 			s2 = conn2.createStatement();
 			String q = "SELECT id FROM ordonnance WHERE etat IN ('2', '3') AND comptable_id='" + getId() + "' AND id NOT IN (SELECT ordonnance_id FROM a_traiter where acteur_id='" + getId() + "') AND id IN (SELECT ordonnance_id FROM action WHERE participant_id='" + getId() + "') ORDER BY date DESC";
-			//String q = "SELECT id FROM ordonnance WHERE etat IN ('2', '3') AND comptable_id='" + getId() + "' AND id NOT IN (SELECT ordonnance_id FROM a_traiter where acteur_id='" + getId() +"') ORDER BY date DESC";
 			System.out.println(q);
 			res2 = s2.executeQuery(q);
 			
 			while(res2.next())
 			{
 			    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
-			    try
-			    {
-			        ordon.chargeParId(res2.getInt("id"));
-			    }
-			    catch(Exception e)
-			    {
-			        System.out.println(e.getMessage());
-			    }
+			    ordon.chargeParId(res2.getInt("id"));
 				addEnCours(ordon);
-				System.out.println(ordon.getId());
 			}
 		}
 	    catch (SQLException e)
