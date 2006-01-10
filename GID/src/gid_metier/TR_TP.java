@@ -431,11 +431,11 @@ public class TR_TP extends Acteur {
 			 {
 			    conn2 = ds.getConnection();
 				s2 = conn2.createStatement();
-				res2 = s2.executeQuery("SELECT ordonnance_id FROM a_traiter WHERE a_traiter.acteur_id='" + getId() + "'");
+				res2 = s2.executeQuery("SELECT ordonnance_id FROM a_traiter WHERE a_traiter.acteur_id='" + getId() + "' AND ordonnance_id NOT IN (SELECT ordonnance_id FROM a_traiter WHERE acteur_id!='" + getId() + "')");
 				while(res2.next())
 				{
 				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
-				    ordon.chargeParId(res2.getInt("id"));
+				    ordon.chargeParId(res2.getInt("ordonnance_id"));
 					addATraiter(ordon);
 				}
 			}

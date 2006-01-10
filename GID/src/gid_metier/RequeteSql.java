@@ -547,6 +547,7 @@ public class RequeteSql extends HttpServlet
 			            ordonnateur.transmettreOrdonnance(ordon, acteur);
 			            ordonnateur.prendreOrdonnanceEnCharge(ordon);
 			            ordonnateur.majComptabilite(ordon);
+			            ordonnateur.addEnCours(ordon);
 			            Action act = new Action();
 			    	    act.setLibelle("Prise en charge");
 			    	    act.setDate(date);
@@ -642,6 +643,7 @@ public class RequeteSql extends HttpServlet
 			    	{
 			            tg.transmettreOrdonnance(ordon, acteur);
 			            tg.prendreOrdonnanceEnCharge(ordon);
+			            tg.addEnCours(ordon);
 			            tg.viser(ordon);
 			            Action act = new Action();
 			    	    act.setLibelle("Prise en charge");

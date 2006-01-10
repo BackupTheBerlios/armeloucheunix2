@@ -472,7 +472,7 @@ public class Ordonnateur extends Acteur {
 		{
 	        conn = ds.getConnection();
 			s = conn.createStatement();
-			query = "SELECT ordonnance_id FROM a_traiter WHERE acteur_id='" + destinataire.getId() + "' AND ordonnance_id='" + ordonnance.getId() + "'";
+			query = "SELECT ordonnance_id FROM a_traiter WHERE (acteur_id='" + destinataire.getId() + "' OR acteur_id IN (SELECT tr_tp_id FROM sousordonnateur)) AND ordonnance_id='" + ordonnance.getId() + "'";
 			res = s.executeQuery(query);
 			if (res.next())
 			{
