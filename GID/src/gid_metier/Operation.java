@@ -254,6 +254,13 @@ public class Operation extends ObjetPersistant {
 		}
     }
     
+    /**
+     * <p>Enregistre l'objet dans le SGBD.</p>
+     * <p>Cette operation correspond a une transaction</p>
+     * 
+     * 
+     * @throws Si une erreur survient pendant la transaction
+     */
     public void sauver() throws Exception
     {
         Context initCtx = new InitialContext();
@@ -271,7 +278,7 @@ public class Operation extends ObjetPersistant {
 			{
 			    query = "UPDATE operation set libelle='" + getLibelle() + "', montant='" + getMontant() + "', date='" + getDate() + "', type='" + getType() + "', comptabilite_id='" + getComptabilite().getId() + "', ordonnance_id='" + getOrdonnance().getId() + "' WHERE id='" + getId() + "'";
 			}
-			res = s.executeQuery(query);
+			s.executeQuery(query);
 			
 		}
 	    catch (SQLException e)
@@ -301,59 +308,8 @@ public class Operation extends ObjetPersistant {
 			}
 		}  
     }
-/**
- * <p>Enregistre l'objet dans le SGBD.</p>
- * <p>Cette operation correspond a une transaction</p>
- * 
- * 
- * @throws Si une erreur survient pendant la transaction
- */
-   /* public void sauver(int id_comptabilite) throws Exception
-    {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
-	    try
-		{
-	        conn = ds.getConnection();
-			s = conn.createStatement();
-			String query;
-			if (getId()==0)
-			{
-			    query = "INSERT INTO operation(libelle, montant, date, type, comptabilite_id) VALUES ('" + getLibelle() + "', '" + getMontant() + "', '" + getDate() + "', '" + getType() + "', '" + id_comptabilite + "')";
-			}
-			else
-			{
-			    query = "UPDATE operation set libelle = '" + getLibelle() + "', montant='" + getMontant() + "', date='" + getDate() + "', type='" + getType() + "', id_comptabilite='" + id_comptabilite + "' WHERE id='" + getId() + "'";
-			}
-			res = s.executeQuery(query);
-		}
-	    catch (SQLException e)
-		{
-	        System.out.println(e.getMessage());
-		}
-		finally
-		{
-			if (res != null)
-			{
-				try {
-					res.close();
-				} catch (SQLException e) {}
-				res = null;
-			}
-			if (s != null) {
-				try {
-					s.close();
-				} catch (SQLException e) {}
-				s = null;
-			}
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {}
-				conn = null;
-			}
-		}
-    }*/
+
+
 
 /**
  * <p>Supprime l'objet du SGBD.</p>
@@ -370,7 +326,7 @@ public class Operation extends ObjetPersistant {
 		{
 	        conn = ds.getConnection();
 			s = conn.createStatement();
-			res = s.executeQuery("DELETE FROM operation WHERE id='" + getId() + "'");
+			s.executeQuery("DELETE FROM operation WHERE id='" + getId() + "'");
 		}
 	    catch (SQLException e)
 		{

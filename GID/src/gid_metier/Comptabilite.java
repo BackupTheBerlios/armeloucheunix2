@@ -252,7 +252,7 @@ public class Comptabilite extends ObjetPersistant {
 			{
 			    query = "UPDATE comptabilite set solde = '" + getSolde() + "', acteur_id='" + acteur.getId() + "' WHERE id='" + getId() + "'";
 			}
-			res = s.executeQuery(query);
+			s.executeQuery(query);
 		}
 	    catch (SQLException e)
 		{
@@ -298,7 +298,7 @@ public class Comptabilite extends ObjetPersistant {
 		{
 	        conn = ds.getConnection();
 			s = conn.createStatement();
-			res = s.executeQuery("DELETE FROM comptabilite WHERE id='" + getId() + "'");
+			s.executeQuery("DELETE FROM comptabilite WHERE id='" + getId() + "'");
 		}
 	    catch (SQLException e)
 		{
@@ -383,5 +383,4 @@ public class Comptabilite extends ObjetPersistant {
 		}  
 		return tous;
     }
-
  }

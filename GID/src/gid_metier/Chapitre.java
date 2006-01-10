@@ -110,22 +110,6 @@ public class Chapitre extends ObjetPersistant {
 			    ligneBudgetaire.chargeParId(res.getInt("ligne_budgetaire_id"));
 			}
 		}
-		  
-	    /*try
-		{
-	        conn = ds.getConnection();
-			s = conn.createStatement();
-			query = "SELECT chapitre.*, l.libelle as libelle_ligne FROM ligne_budgetaire l, chapitre  WHERE chapitre.id='" + id + "' AND ligne_budgetaire_id=l.id";
-			res = s.executeQuery(query);
-			if(res.next())
-			{
-			    setId(res.getInt("id"));
-			    setCode(res.getString("code"));
-			    setLibelle(res.getString("libelle"));
-			    ligneBudgetaire.setId(res.getInt("ligne_budgetaire_id"));
-			    ligneBudgetaire.setLibelle(res.getString("libelle_ligne"));
-			}
-		}*/
 	    catch (SQLException e)
 		{
 	        System.out.println(e.getMessage());
@@ -178,7 +162,7 @@ public class Chapitre extends ObjetPersistant {
 			{
 			    query = "UPDATE chapitre set code='" + getCode() + "', libelle='" + getLibelle() + "', ligne_budgetaire_id='" + getLigneBudgetaire().getId() + "' WHERE id='" + getId() + "'";
 			}
-			res = s.executeQuery(query);
+			s.executeQuery(query);
 			
 		}
 	    catch (SQLException e)
@@ -226,7 +210,7 @@ public class Chapitre extends ObjetPersistant {
 	        conn = ds.getConnection();
 			s = conn.createStatement();
 			query = "DELETE FROM chapitre WHERE id='" + getId() + "'";
-			res = s.executeQuery(query);
+			s.executeQuery(query);
 		}
 	    catch (SQLException e)
 		{

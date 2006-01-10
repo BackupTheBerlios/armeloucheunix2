@@ -67,7 +67,7 @@ public class TR_TP extends Acteur {
 			}
 			finally
 			{
-				if (res != null)
+				if (res2 != null)
 				{
 					try {
 						res2.close();
@@ -140,7 +140,7 @@ public class TR_TP extends Acteur {
 			{
 			    query = "UPDATE tr_tp set login = '" + getLogin() + "', mdp = '" + getMdp() + "', nom = '" + getNom() + "', prenom = '" + getPrenom() + "' WHERE id='" + getId() + "'";
 			}
-			res = s.executeQuery(query);
+			s.executeQuery(query);
 		}
 	    catch (SQLException e)
 		{
@@ -185,7 +185,7 @@ public class TR_TP extends Acteur {
 		{
 	        conn = ds.getConnection();
 			s = conn.createStatement();
-			res = s.executeQuery("DELETE FROM tr_tp WHERE id='" + getId() + "'");
+			s.executeQuery("DELETE FROM tr_tp WHERE id='" + getId() + "'");
 		}
 	    catch (SQLException e)
 		{
@@ -470,7 +470,6 @@ public class TR_TP extends Acteur {
 			    conn2 = ds.getConnection();
 				s2 = conn2.createStatement();
 				String q = "SELECT id FROM ordonnance WHERE etat='4' AND delegataire_id IN (SELECT id FROM sousordonnateur WHERE tr_tp_id='" + getId() + "') ORDER BY date DESC";
-				System.out.println(q);
 				res2 = s2.executeQuery(q);
 				
 				while(res2.next())

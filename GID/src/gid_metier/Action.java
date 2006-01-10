@@ -260,7 +260,7 @@ public class Action extends ObjetPersistant {
 			{
 			    query = "UPDATE action set date='" + getDate() + "', type='" + getType() + "', libelle='" + getLibelle() + "', ordonnance_id='" + getOrdonnance().getId() + "', participant_id='" + getParticipant().getId() + "' WHERE id='" + getId() + "'";
 			}
-			res = s.executeQuery(query);
+			s.executeQuery(query);
 			
 		}
 	    catch (SQLException e)
@@ -308,7 +308,7 @@ public class Action extends ObjetPersistant {
 	        conn = ds.getConnection();
 			s = conn.createStatement();
 			query = "DELETE FROM action WHERE id='" + getId() + "'";
-			res = s.executeQuery(query);
+			s.executeQuery(query);
 		}
 	    catch (SQLException e)
 		{
@@ -393,8 +393,4 @@ public class Action extends ObjetPersistant {
 		}  
 		return tous;
     }
-
-    
-    
-    
  }

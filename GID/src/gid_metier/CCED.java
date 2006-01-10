@@ -44,14 +44,7 @@ public class CCED extends Acteur {
 				setPrenom(res.getString("prenom"));
 				
 			    Comptabilite compta = new Comptabilite();
-			    try
-			    {
-			        compta.chargeParIdActeur(getId());
-			    }
-			    catch(Exception e)
-			    {
-			        
-			    }
+			    compta.chargeParIdActeur(getId());
 			    setComptaPerso(compta);
 			 }
 			
@@ -63,14 +56,7 @@ public class CCED extends Acteur {
 				while(res2.next())
 				{
 				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
-				    try
-				    {
-				        ordon.chargeParId(res2.getInt("ordonnance_id"));
-				    }
-				    catch(Exception e)
-				    {
-				        
-				    }
+				    ordon.chargeParId(res2.getInt("ordonnance_id"));
 					addATraiter(ordon);
 				}
 			}
@@ -80,7 +66,7 @@ public class CCED extends Acteur {
 			}
 			finally
 			{
-				if (res != null)
+				if (res2 != null)
 				{
 					try {
 						res2.close();
@@ -153,7 +139,7 @@ public class CCED extends Acteur {
 			{
 			    query = "UPDATE cced set login = '" + getLogin() + "', mdp = '" + getMdp() + "', nom = '" + getNom() + "', prenom = '" + getPrenom() + "' WHERE id='" + getId() + "'";
 			}
-			res = s.executeQuery(query);
+			s.executeQuery(query);
 		}
 	    catch (SQLException e)
 		{
@@ -198,7 +184,7 @@ public class CCED extends Acteur {
 		{
 	        conn = ds.getConnection();
 			s = conn.createStatement();
-			res = s.executeQuery("DELETE FROM cced WHERE id='" + getId() + "'");
+			s.executeQuery("DELETE FROM cced WHERE id='" + getId() + "'");
 		}
 	    catch (SQLException e)
 		{
@@ -464,7 +450,7 @@ public class CCED extends Acteur {
         return !(getLogin() == null && getMdp() == null);
     }
 
-    public void authentifie(String login, String password) throws NamingException
+    public void authentifie(String login, String password) throws NamingException, Exception
 	{
         Context initCtx = new InitialContext();
 		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
@@ -482,14 +468,7 @@ public class CCED extends Acteur {
 				setPrenom(res.getString("prenom"));
 				
 			    Comptabilite compta = new Comptabilite();
-			    try
-			    {
-			        compta.chargeParIdActeur(getId());
-			    }
-			    catch(Exception e)
-			    {
-			        
-			    }
+			    compta.chargeParIdActeur(getId());
 			    setComptaPerso(compta);
 			 }
 			 try
@@ -500,15 +479,8 @@ public class CCED extends Acteur {
 				while(res2.next())
 				{
 				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
-				    try
-				    {
-				        ordon.chargeParId(res2.getInt("ordonnance_id"));
-				    }
-				    catch(Exception e)
-				    {
-				        
-				    }
-					addATraiter(ordon);
+				    ordon.chargeParId(res2.getInt("ordonnance_id"));
+				    addATraiter(ordon);
 				}
 			}
 		    catch (SQLException e)
@@ -548,14 +520,7 @@ public class CCED extends Acteur {
 				while(res2.next())
 				{
 				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
-				    try
-				    {
-				        ordon.chargeParId(res2.getInt("id"));
-				    }
-				    catch(Exception e)
-				    {
-				        System.out.println(e.getMessage());
-				    }
+				    ordon.chargeParId(res2.getInt("id"));
 					addArchives(ordon);
 				}
 			}
@@ -590,22 +555,13 @@ public class CCED extends Acteur {
 			    conn2 = ds.getConnection();
 				s2 = conn2.createStatement();
 				String q = "SELECT id FROM ordonnance WHERE etat!='4' AND initiateur_id IN (SELECT id FROM ordonnateur WHERE controleur_id='" + getId() + "') AND id NOT IN (SELECT ordonnance_id FROM a_traiter where acteur_id='" + getId() +"') ORDER BY date DESC";
-				System.out.println(q);
 				res2 = s2.executeQuery(q);
 				
 				while(res2.next())
 				{
 				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
-				    try
-				    {
-				        ordon.chargeParId(res2.getInt("id"));
-				    }
-				    catch(Exception e)
-				    {
-				        System.out.println(e.getMessage());
-				    }
+				    ordon.chargeParId(res2.getInt("id"));
 					addEnCours(ordon);
-					System.out.println(ordon.getId());
 				}
 			}
 		    catch (SQLException e)

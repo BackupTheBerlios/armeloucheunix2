@@ -70,7 +70,6 @@ public class Ordonnateur extends Acteur {
 			    compta.chargeParIdActeur(getId());
 			    setComptaPerso(compta);
 			 }
-			
 			 try
 			 {
 			    conn2 = ds.getConnection();
@@ -114,9 +113,7 @@ public class Ordonnateur extends Acteur {
 			    conn2 = ds.getConnection();
 				s2 = conn2.createStatement();
 				String q = "SELECT id FROM ordonnance WHERE etat='4' AND initiateur_id='" + getId() + "' AND id NOT IN (SELECT ordonnance_id FROM a_traiter)";
-				System.out.println(q);
 				res2 = s2.executeQuery(q);
-				
 				while(res2.next())
 				{
 				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
@@ -203,7 +200,7 @@ public class Ordonnateur extends Acteur {
 			{
 			    query = "UPDATE ordonnateur set login = '" + getLogin() + "', mdp = '" + getMdp() + "', nom = '" + getNom() + "', prenom = '" + getPrenom() + "', controleur_id = '" + getControleur().getId() + "' WHERE id='" + getId() + "'";
 			}
-			res = s.executeQuery(query);
+			s.executeQuery(query);
 		}
 	    catch (SQLException e)
 		{
@@ -248,7 +245,7 @@ public class Ordonnateur extends Acteur {
 		{
 	        conn = ds.getConnection();
 			s = conn.createStatement();
-			res = s.executeQuery("DELETE FROM ordonnateur WHERE id='" + getId() + "'");
+			s.executeQuery("DELETE FROM ordonnateur WHERE id='" + getId() + "'");
 		}
 	    catch (SQLException e)
 		{
@@ -513,7 +510,6 @@ public class Ordonnateur extends Acteur {
 	        conn = ds.getConnection();
 			s = conn.createStatement();
 			query = "INSERT INTO a_traiter(ordonnance_id, acteur_id) VALUES ('" + ordonnance.getId() + "', '" + destinataire.getId() + "')";
-		    System.out.println(query);
 		    if(deja_a_traiter==false)
 		    {
 		        s.executeQuery(query);
@@ -764,20 +760,12 @@ public class Ordonnateur extends Acteur {
 		    conn2 = ds.getConnection();
 			s2 = conn2.createStatement();
 			String q = "SELECT id FROM ordonnance WHERE date='" + ordonnance.getDate() + "' AND libelle='" + ordonnance.getLibelle() + "' AND initiateur_id='" + getId() + "'";
-			System.out.println(q);
 			res2 = s2.executeQuery(q);
 			
 			while(res2.next())
 			{
-			    try
-			    {
-			        ordonnance.chargeParId(res2.getInt("id"));
-			    }
-			    catch(Exception e)
-			    {
-			        System.out.println(e.getMessage());
-			    }
-				getEnCours().add(0, ordonnance);
+			    ordonnance.chargeParId(res2.getInt("id"));
+			    getEnCours().add(0, ordonnance);
 			}
 		}
 	    catch (SQLException e)
@@ -786,7 +774,7 @@ public class Ordonnateur extends Acteur {
 		}
 		finally
 		{
-			if (res != null)
+			if (res2 != null)
 			{
 				try {
 					res2.close();

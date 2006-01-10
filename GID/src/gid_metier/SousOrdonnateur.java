@@ -226,7 +226,7 @@ public class SousOrdonnateur extends Acteur {
 		{
 	        conn = ds.getConnection();
 			s = conn.createStatement();
-			res = s.executeQuery("DELETE FROM sousordonnateur WHERE id='" + getId() + "'");
+			s.executeQuery("DELETE FROM sousordonnateur WHERE id='" + getId() + "'");
 		}
 	    catch (SQLException e)
 		{
@@ -598,7 +598,6 @@ public class SousOrdonnateur extends Acteur {
 		    conn2 = ds.getConnection();
 			s2 = conn2.createStatement();
 			String q = "SELECT id FROM ordonnance WHERE etat='4' AND delegataire_id='" + getId() + "' AND id NOT IN (SELECT ordonnance_id FROM a_traiter) ORDER BY date DESC";
-			System.out.println(q);
 			res2 = s2.executeQuery(q);
 			
 			while(res2.next())
@@ -639,7 +638,6 @@ public class SousOrdonnateur extends Acteur {
 		    conn2 = ds.getConnection();
 			s2 = conn2.createStatement();
 			String q = "SELECT id FROM ordonnance WHERE id IN (SELECT action.ordonnance_id FROM action WHERE participant_id='" + getId() + "' AND type='1') EXCEPT (SELECT ordonnance_id FROM a_traiter WHERE acteur_id='" + getId() + "' UNION SELECT a.ordonnance_id FROM a_traiter a, a_traiter b, ordonnance o WHERE a.ordonnance_id=b.ordonnance_id AND a.ordonnance_id=o.id AND b.acteur_id='" + getId() + "' AND ((a.acteur_id=o.initiateur_id AND o.etat='3') OR a.acteur_id=o.comptable_id))";
-			System.out.println(q);
 			res2 = s2.executeQuery(q);
 			
 			while(res2.next())

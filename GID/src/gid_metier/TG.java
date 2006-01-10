@@ -68,7 +68,7 @@ public class TG extends Acteur {
 			}
 			finally
 			{
-				if (res != null)
+				if (res2 != null)
 				{
 					try {
 						res2.close();
@@ -141,7 +141,7 @@ public class TG extends Acteur {
 			{
 			    query = "UPDATE tg set login = '" + getLogin() + "', mdp = '" + getMdp() + "', nom = '" + getNom() + "', prenom = '" + getPrenom() + "' WHERE id='" + getId() + "'";
 			}
-			res = s.executeQuery(query);
+			s.executeQuery(query);
 		}
 	    catch (SQLException e)
 		{
@@ -186,7 +186,7 @@ public class TG extends Acteur {
 		{
 	        conn = ds.getConnection();
 			s = conn.createStatement();
-			res = s.executeQuery("DELETE FROM tg WHERE id='" + getId() + "'");
+			s.executeQuery("DELETE FROM tg WHERE id='" + getId() + "'");
 		}
 	    catch (SQLException e)
 		{

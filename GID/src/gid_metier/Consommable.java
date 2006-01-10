@@ -197,7 +197,7 @@ public class Consommable extends ObjetPersistant {
 			{
 			    query = "UPDATE consommable set libelle='" + getLibelle() + "', prix='" + getPrix() + "', unite='" + getUnite() + "' WHERE id='" + getId() + "'";
 			}
-			res = s.executeQuery(query);
+			s.executeQuery(query);
 			
 		}
 	    catch (SQLException e)
@@ -245,7 +245,7 @@ public class Consommable extends ObjetPersistant {
 	        conn = ds.getConnection();
 			s = conn.createStatement();
 			query = "DELETE FROM consommable WHERE id='" + getId() + "'";
-			res = s.executeQuery(query);
+			s.executeQuery(query);
 			
 		}
 	    catch (SQLException e)

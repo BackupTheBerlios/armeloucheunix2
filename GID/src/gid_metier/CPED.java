@@ -46,15 +46,8 @@ public class CPED extends Acteur {
 				setNom(res.getString("nom"));
 				setPrenom(res.getString("prenom"));
 				
-			    Comptabilite compta = new Comptabilite();
-			    try
-			    {
-			        compta.chargeParIdActeur(getId());
-			    }
-			    catch(Exception e)
-			    {
-			        
-			    }
+				Comptabilite compta = new Comptabilite();
+			    compta.chargeParIdActeur(getId());
 			    setComptaPerso(compta);
 			 }
 			
@@ -66,15 +59,8 @@ public class CPED extends Acteur {
 				while(res2.next())
 				{
 				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
-				    try
-				    {
-				        ordon.chargeParId(res2.getInt("ordonnance_id"));
-				    }
-				    catch(Exception e)
-				    {
-				        
-				    }
-					addATraiter(ordon);
+				    ordon.chargeParId(res2.getInt("ordonnance_id"));
+				    addATraiter(ordon);
 				}
 			}
 		    catch (SQLException e)
@@ -83,7 +69,7 @@ public class CPED extends Acteur {
 			}
 			finally
 			{
-				if (res != null)
+				if (res2 != null)
 				{
 					try {
 						res2.close();
@@ -156,7 +142,7 @@ public class CPED extends Acteur {
 			{
 			    query = "UPDATE cped set login = '" + getLogin() + "', mdp = '" + getMdp() + "', nom = '" + getNom() + "', prenom = '" + getPrenom() + "' WHERE id='" + getId() + "'";
 			}
-			res = s.executeQuery(query);
+			s.executeQuery(query);
 		}
 	    catch (SQLException e)
 		{
@@ -201,7 +187,7 @@ public class CPED extends Acteur {
 		{
 	        conn = ds.getConnection();
 			s = conn.createStatement();
-			res = s.executeQuery("DELETE FROM cped WHERE id='" + getId() + "'");
+			s.executeQuery("DELETE FROM cped WHERE id='" + getId() + "'");
 		}
 	    catch (SQLException e)
 		{
@@ -508,7 +494,7 @@ public class CPED extends Acteur {
         return !(this.getLogin()== null && this.getMdp()==null);
     }
 
-    public void authentifie(String login, String password) throws NamingException
+    public void authentifie(String login, String password) throws NamingException, Exception
 	{
         Context initCtx = new InitialContext();
 		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
@@ -526,14 +512,7 @@ public class CPED extends Acteur {
 				setPrenom(res.getString("prenom"));
 				
 			    Comptabilite compta = new Comptabilite();
-			    try
-			    {
-			        compta.chargeParIdActeur(getId());
-			    }
-			    catch(Exception e)
-			    {
-			        
-			    }
+			    compta.chargeParIdActeur(getId());
 			    setComptaPerso(compta);
 			 }
 			
@@ -545,15 +524,8 @@ public class CPED extends Acteur {
 				while(res2.next())
 				{
 				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
-				    try
-				    {
-				        ordon.chargeParId(res2.getInt("ordonnance_id"));
-				    }
-				    catch(Exception e)
-				    {
-				        
-				    }
-					addATraiter(ordon);
+				    ordon.chargeParId(res2.getInt("ordonnance_id"));
+				    addATraiter(ordon);
 				}
 			}
 		    catch (SQLException e)
@@ -562,7 +534,7 @@ public class CPED extends Acteur {
 			}
 			finally
 			{
-				if (res != null)
+				if (res2 != null)
 				{
 					try {
 						res2.close();
@@ -587,22 +559,13 @@ public class CPED extends Acteur {
 			    conn2 = ds.getConnection();
 				s2 = conn2.createStatement();
 				String q = "SELECT id FROM ordonnance WHERE etat='4' AND delegataire_id IN (SELECT id FROM sousordonnateur WHERE cped_id='" + getId() + "') ORDER BY date DESC";
-				System.out.println(q);
 				res2 = s2.executeQuery(q);
 				
 				while(res2.next())
 				{
 				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
-				    try
-				    {
-				        ordon.chargeParId(res2.getInt("id"));
-				    }
-				    catch(Exception e)
-				    {
-				        System.out.println(e.getMessage());
-				    }
-					addArchives(ordon);
-					System.out.println(ordon.getId());
+				    ordon.chargeParId(res2.getInt("id"));
+				    addArchives(ordon);
 				}
 			}
 		    catch (SQLException e)
@@ -611,7 +574,7 @@ public class CPED extends Acteur {
 			}
 			finally
 			{
-				if (res != null)
+				if (res2 != null)
 				{
 					try {
 						res2.close();
@@ -636,22 +599,13 @@ public class CPED extends Acteur {
 			    conn2 = ds.getConnection();
 				s2 = conn2.createStatement();
 				String q = "SELECT id FROM ordonnance WHERE etat IN ('2', '3') AND delegataire_id IN (SELECT id FROM sousordonnateur WHERE cped_id='" + getId() + "') AND id NOT IN (SELECT ordonnance_id FROM a_traiter where acteur_id='" + getId() +"') AND id IN (SELECT ordonnance_id FROM action WHERE participant_id='" + getId() + "') ORDER BY date DESC";
-				System.out.println(q);
 				res2 = s2.executeQuery(q);
 				
 				while(res2.next())
 				{
 				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
-				    try
-				    {
-				        ordon.chargeParId(res2.getInt("id"));
-				    }
-				    catch(Exception e)
-				    {
-				        System.out.println(e.getMessage());
-				    }
-					addEnCours(ordon);
-					System.out.println(ordon.getId());
+				    ordon.chargeParId(res2.getInt("id"));
+				    addEnCours(ordon);
 				}
 			}
 		    catch (SQLException e)
@@ -660,7 +614,7 @@ public class CPED extends Acteur {
 			}
 			finally
 			{
-				if (res != null)
+				if (res2 != null)
 				{
 					try {
 						res2.close();
@@ -751,7 +705,5 @@ public class CPED extends Acteur {
 			}
 		}   
 		return r;
-    }
-    
-    
+    }  
  }

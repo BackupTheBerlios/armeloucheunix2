@@ -534,7 +534,7 @@ public class OrdonnanceDelegation extends ObjetPersistant {
 		{
 	        conn = ds.getConnection();
 			s = conn.createStatement();
-			res = s.executeQuery(query);
+			s.executeQuery(query);
 		}
 	    catch (SQLException e)
 		{
@@ -595,7 +595,7 @@ public class OrdonnanceDelegation extends ObjetPersistant {
 		{
 	        conn = ds.getConnection();
 			s = conn.createStatement();
-			res = s.executeQuery(query);
+			s.executeQuery(query);
 		}
 	    catch (SQLException e)
 		{
@@ -628,7 +628,6 @@ public class OrdonnanceDelegation extends ObjetPersistant {
 		    conn = ds.getConnection();
 			s = conn.createStatement();
 		    query = "SELECT id from ordonnance WHERE libelle='" + getLibelle() + "' AND date='" + getDate() + "' AND montant='" + getMontant() + "'";
-		    System.out.println(query);
 			res = s.executeQuery(query);
 			if (res.next())
 			{
@@ -666,12 +665,11 @@ public class OrdonnanceDelegation extends ObjetPersistant {
 		{
 		    conso = (Consommable)(getConsommables()).elementAt(i);
 			query = "INSERT INTO consomme(consommable_id, ordonnance_id, quantite) VALUES ('" + conso.getId() + "', '" + getId()  + "', '" + conso.getQuantite() + "')";
-			System.out.println(query);
 	        try 
 	        {
 	            conn = ds.getConnection();
 				s = conn.createStatement();
-				res = s.executeQuery(query);
+				s.executeQuery(query);
 	        }
 	        catch(Exception e)
 	        {
@@ -696,7 +694,7 @@ public class OrdonnanceDelegation extends ObjetPersistant {
 		{
 	        conn = ds.getConnection();
 			s = conn.createStatement();
-			res = s.executeQuery("DELETE FROM ordonnancedelegation WHERE id='" + getId() + "'");
+			s.executeQuery("DELETE FROM ordonnancedelegation WHERE id='" + getId() + "'");
 		}
 	    catch (SQLException e)
 		{

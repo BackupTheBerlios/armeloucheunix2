@@ -170,7 +170,7 @@ public class LigneBudgetaire extends ObjetPersistant {
 			{
 			    query = "UPDATE ligne_budgetaire set libelle='" + getLibelle() + "' WHERE id='" + getId() + "'";
 			}
-			res = s.executeQuery(query);
+			s.executeQuery(query);
 			
 		}
 	    catch (SQLException e)
@@ -218,7 +218,7 @@ public class LigneBudgetaire extends ObjetPersistant {
 	        conn = ds.getConnection();
 			s = conn.createStatement();
 			query = "DELETE FROM lignebudgetaire WHERE id='" + getId() + "'";
-			res = s.executeQuery(query);
+			s.executeQuery(query);
 			
 		}
 	    catch (SQLException e)
