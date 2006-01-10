@@ -694,7 +694,7 @@ public class OrdonnanceDelegation extends ObjetPersistant {
 		{
 	        conn = ds.getConnection();
 			s = conn.createStatement();
-			s.executeQuery("DELETE FROM ordonnancedelegation WHERE id='" + getId() + "'");
+			s.executeQuery("DELETE FROM ordonnance WHERE id='" + getId() + "'");
 		}
 	    catch (SQLException e)
 		{

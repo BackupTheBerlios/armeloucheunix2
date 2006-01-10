@@ -816,6 +816,31 @@ public class RequeteSql extends HttpServlet
 			   
 			    gotoPage("/tableau_de_bord.jsp",request,response);
 			}
+			if (action.equalsIgnoreCase("retrait_ordonnance"))
+			{
+			    if(request.getParameter("encours")!=null)
+			    {
+			        try
+			        {
+			            ordonnateur.retirerOrdonnanceDelegation((OrdonnanceDelegation)ordonnateur.getEnCours().elementAt(new Integer(request.getParameter("place")).intValue()));
+			        }
+			        catch (Exception e)
+			        {
+			            System.out.println(e.getMessage());
+			        }
+			    }
+			    else if (request.getParameter("a_traiter")!=null)
+			    {
+			        try
+			        {
+			            ordonnateur.retirerOrdonnanceDelegation((OrdonnanceDelegation)ordonnateur.getATraiters().elementAt(new Integer(request.getParameter("place")).intValue()));
+			        }
+			        catch (Exception e)
+			        {
+			            System.out.println(e.getMessage());
+			        }
+			    }
+			}
 		}
 	}
 		

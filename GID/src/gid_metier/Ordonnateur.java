@@ -804,7 +804,163 @@ public class Ordonnateur extends Acteur {
  * @param ordonnance L'ordonnance à supprimer
  * @throws Une exception si la suppression échoue
  */
-    public void retirerOrdonnanceDelegation(gid_metier.OrdonnanceDelegation ordonnance) throws Exception {        
+    public void retirerOrdonnanceDelegation(gid_metier.OrdonnanceDelegation ordonnance) throws Exception {
+        Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+        System.out.println("itptptzepr");
+        String q="";
+        try
+		{
+		    conn = ds.getConnection();
+			s = conn.createStatement();
+			q = "SELECT comptabilite_id, id FROM operation WHERE ordonnance_id='" + ordonnance.getId() + "'";
+			res = s.executeQuery(q);
+			System.out.println(q);
+			while(res.next())
+			{
+			    Operation operation = new Operation();
+			    operation.chargeParId(res.getInt("id"));
+			    Comptabilite compta = new Comptabilite();
+			    compta.chargeParId(res.getInt("comptabilite_id"));
+			    if(compta.getId()!= getComptaPerso().getId())
+			    {
+			        compta.setSolde(compta.getSolde() - ordonnance.getMontant());
+			    }
+			    else
+			    {
+			        compta.setSolde(compta.getSolde() + ordonnance.getMontant());
+			    }
+			    compta.sauver();
+			    operation.supprimer();
+			}
+		}
+        catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}
+		q = "DELETE FROM action WHERE ordonnance_id='" + ordonnance.getId() + "'";
+		try
+		{
+		    conn = ds.getConnection();
+			s = conn.createStatement();
+		    s.executeQuery(q);
+		}
+		catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}
+		System.out.println(q);
+		q = "DELETE FROM a_traiter WHERE ordonnance_id='" + ordonnance.getId() + "'";
+		try
+		{
+		    conn = ds.getConnection();
+			s = conn.createStatement();
+		    s.executeQuery(q);
+		}
+		catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}
+		System.out.println(q);
+		q = "DELETE FROM consomme WHERE ordonnance_id='" + ordonnance.getId() + "'";
+		try
+		{
+		    conn = ds.getConnection();
+			s = conn.createStatement();
+		    s.executeQuery(q);
+		}
+		catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}	
         ordonnance.supprimer();
     } 
 
