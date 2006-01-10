@@ -420,9 +420,6 @@ public class RequeteSql extends HttpServlet
 			    Acteur acteur=null;
 			    GregorianCalendar dateG = new GregorianCalendar();
 			    java.util.Date date = dateG.getTime();
-			    /*date.setHours(dateG.get(GregorianCalendar.HOUR_OF_DAY));
-			    date.setMinutes(dateG.get(GregorianCalendar.MINUTE));
-			    date.setSeconds(dateG.get(GregorianCalendar.SECOND));*/
 			    if (cced.identifie())
 			    {
 			    	switch(etatOrdo)
@@ -435,6 +432,14 @@ public class RequeteSql extends HttpServlet
 			    		        ordon.setRefVisaCCED("True");
 			    		        ordon.setDateVisaCCED(date);
 			    		        ordon.setEtat(2);
+			    		        try 
+			    		        {
+			    		            cced.majComptabilite(ordon);
+			    		        }
+			    		        catch(Exception e)
+			    		        {
+			    		            System.out.println(e.getMessage());
+			    		        }
 			    		    }
 			    		    else
 			    		    {
@@ -482,7 +487,8 @@ public class RequeteSql extends HttpServlet
 				            cped.transmettreOrdonnance(ordon, ordon.getDelegataire());
 			            }
 			            cped.prendreOrdonnanceEnCharge(ordon);
-			            cped.addEnCours(ordon);
+			            cped.majComptabilite(ordon);
+	    		        cped.addEnCours(ordon);
 			            Action act = new Action();
 			    	    act.setLibelle("Prise en charge");
 			    	    act.setDate(date);
@@ -540,6 +546,7 @@ public class RequeteSql extends HttpServlet
 			    	{
 			            ordonnateur.transmettreOrdonnance(ordon, acteur);
 			            ordonnateur.prendreOrdonnanceEnCharge(ordon);
+			            ordonnateur.majComptabilite(ordon);
 			            Action act = new Action();
 			    	    act.setLibelle("Prise en charge");
 			    	    act.setDate(date);
@@ -581,7 +588,7 @@ public class RequeteSql extends HttpServlet
 			            }
 			            sousOrdonnateur.prendreOrdonnanceEnCharge(ordon);
 			            sousOrdonnateur.addEnCours(ordon);
-			            
+			            sousOrdonnateur.majComptabilite(ordon);
 			            Action act = new Action();
 			    	    act.setLibelle("Prise en charge");
 			    	    act.setDate(date);
@@ -611,6 +618,14 @@ public class RequeteSql extends HttpServlet
 			    		        ordon.setRefVisaTG("True");
 			    		        ordon.setDateVisaTG(date);
 			    		        ordon.setEtat(3);
+			    		        try 
+			    		        {
+			    		            tg.majComptabilite(ordon);
+			    		        }
+			    		        catch(Exception e)
+			    		        {
+			    		            System.out.println(e.getMessage());
+			    		        }
 			    		    }
 			    		    else
 			    		    {
@@ -655,6 +670,7 @@ public class RequeteSql extends HttpServlet
 			            {
 				            ordon.clore();
 				            tr_tp.prendreOrdonnanceEnCharge(ordon);
+		    		        tr_tp.majComptabilite(ordon);
 				            Action act = new Action();
 				    	    act.setLibelle("Prise en charge");
 				    	    act.setDate(date);

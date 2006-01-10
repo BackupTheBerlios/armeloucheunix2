@@ -38,6 +38,16 @@ public class Operation extends ObjetPersistant {
  */
     private String type;
 
+    private OrdonnanceDelegation ordon;
+    
+    public OrdonnanceDelegation getOrdonnance()
+    {
+        return ordon;
+    }
+    public void setOrdonnance(OrdonnanceDelegation ordon)
+    {
+        this.ordon = ordon;
+    }
     
     private Comptabilite comptabilite;
     public Comptabilite getComptabilite()
@@ -158,6 +168,9 @@ public class Operation extends ObjetPersistant {
 		        Comptabilite compta = new Comptabilite();
 		        compta.chargeParId(res.getInt("comptabilite_id"));
 		        setComptabilite(compta);
+		        OrdonnanceDelegation ordonnance = new OrdonnanceDelegation();
+		        ordonnance.chargeParId(res.getInt("ordonnance_id"));
+		        setOrdonnance(ordonnance);
 			}
 		}
 	    catch (SQLException e)
@@ -208,6 +221,9 @@ public class Operation extends ObjetPersistant {
 		        Comptabilite compta = new Comptabilite();
 		        compta.chargeParId(res.getInt("comptabilite_id"));
 		        setComptabilite(compta);
+		        OrdonnanceDelegation ordonnance = new OrdonnanceDelegation();
+		        ordonnance.chargeParId(res.getInt("ordonnance_id"));
+		        setOrdonnance(ordonnance);
 			}
 		}
 	    catch (SQLException e)
@@ -249,11 +265,11 @@ public class Operation extends ObjetPersistant {
 			s = conn.createStatement();
 			if (getId()==0)
 			{
-			    query = "INSERT INTO operation(libelle, montant, date, type, comptabilite_id) VALUES ('" + getLibelle() + "', '" + getMontant() + "', '" + getDate() + "', '" + getType() + "', '" + getComptabilite().getId() + "')";
+			    query = "INSERT INTO operation(libelle, montant, date, type, comptabilite_id, ordonnance_id) VALUES ('" + getLibelle() + "', '" + getMontant() + "', '" + getDate() + "', '" + getType() + "', '" + getComptabilite().getId() + "', '" + getOrdonnance().getId() + "')";
 			}
 			else
 			{
-			    query = "UPDATE operation set libelle='" + getLibelle() + "' WHERE id='" + getId() + "'";
+			    query = "UPDATE operation set libelle='" + getLibelle() + "', montant='" + getMontant() + "', date='" + getDate() + "', type='" + getType() + "', comptabilite_id='" + getComptabilite().getId() + "', ordonnance_id='" + getOrdonnance().getId() + "' WHERE id='" + getId() + "'";
 			}
 			res = s.executeQuery(query);
 			

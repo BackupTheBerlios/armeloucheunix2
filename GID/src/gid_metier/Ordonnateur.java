@@ -394,17 +394,67 @@ public class Ordonnateur extends Acteur {
     public void majComptabilite(OrdonnanceDelegation ordonnance) throws Exception
     {
         Operation operation = new Operation();
-        operation.setLibelle(ordonnance.getLibelle());
-        operation.setMontant(ordonnance.getMontant());
-        GregorianCalendar date = new GregorianCalendar();
-        operation.setDate(new java.util.Date(date.get(GregorianCalendar.YEAR) - 1900, date.get(GregorianCalendar.MONTH), date.get(GregorianCalendar.DAY_OF_MONTH)));
-        operation.setType("D");
-        operation.setComptabilite(getComptaPerso());
-        getComptaPerso().addOperation(operation);
-        System.out.println("toto");
-        getComptaPerso().setSolde(getComptaPerso().getSolde() - operation.getMontant());
-        getComptaPerso().sauver(this);
-        operation.sauver();
+        Context initCtx = new InitialContext();
+		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+	    try
+		{
+	        conn = ds.getConnection();
+			s = conn.createStatement();
+			String query="SELECT operation.id FROM operation, comptabilite WHERE ordonnance_id='" + ordonnance.getId() + "' AND comptabilite_id=comptabilite.id AND acteur_id='" + getId() + "'";
+			res = s.executeQuery(query);
+			if (res.next())
+			{
+			    operation.chargeParId(res.getInt("id"));
+			    if(operation.getMontant() != ordonnance.getMontant())
+			    {
+			        getComptaPerso().setSolde(getComptaPerso().getSolde() + operation.getMontant() - ordonnance.getMontant());
+			        operation.setMontant(ordonnance.getMontant());
+			        getComptaPerso().sauver(this);
+			        operation.sauver();
+			    }
+			}
+			else
+			{
+			    operation.setLibelle(ordonnance.getLibelle());
+		        operation.setMontant(ordonnance.getMontant());
+		        GregorianCalendar date = new GregorianCalendar();
+		        operation.setDate(new java.util.Date(date.get(GregorianCalendar.YEAR) - 1900, date.get(GregorianCalendar.MONTH), date.get(GregorianCalendar.DAY_OF_MONTH)));
+		        operation.setType("D");
+		        operation.setComptabilite(getComptaPerso());
+		        operation.setOrdonnance(ordonnance);
+		        getComptaPerso().setSolde(getComptaPerso().getSolde() - ordonnance.getMontant());
+		        System.out.println(getComptaPerso().getSolde());
+		        getComptaPerso().sauver(this);
+		        operation.sauver();
+		        getComptaPerso().addOperation(operation);
+			}
+		}
+	    catch (SQLException e)
+		{
+	        System.out.println(e.getMessage());
+		}
+		finally
+		{
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException e) {}
+				res = null;
+			}
+			if (s != null) {
+				try {
+					s.close();
+				} catch (SQLException e) {}
+				s = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+				conn = null;
+			}
+		}
     }
 
 /**

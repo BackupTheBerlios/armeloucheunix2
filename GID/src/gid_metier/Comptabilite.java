@@ -168,6 +168,7 @@ public class Comptabilite extends ObjetPersistant {
     {
         Context initCtx = new InitialContext();
 		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+		operation = new Vector();
 	    try
 		{
 	        conn = ds.getConnection();
