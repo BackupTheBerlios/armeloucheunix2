@@ -771,6 +771,7 @@ public class Ordonnateur extends Acteur {
 			while(res2.next())
 			{
 			    ordonnance.chargeParId(res2.getInt("id"));
+			    System.out.println(ordonnance.getConsommables());
 			    getEnCours().add(0, ordonnance);
 			}
 		}

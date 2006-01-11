@@ -358,7 +358,7 @@ public class OrdonnanceDelegation extends ObjetPersistant {
     }
     /** @poseidon-generated */
     public void addConsommable(gid_metier.Consommable consommable) {
-        if (! this.consommable.contains(consommable)) this.consommable.addElement(consommable);
+        this.consommable.addElement(consommable);
     }
     /** @poseidon-generated */
     public void removeConsommable(gid_metier.Consommable consommable) {
@@ -429,7 +429,7 @@ public class OrdonnanceDelegation extends ObjetPersistant {
         /*Context initCtx = new InitialContext();
 		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query="";
-		
+		consommable = new Vector();
 		 try
 		 {
 	        conn = ds.getConnection();
