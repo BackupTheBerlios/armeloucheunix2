@@ -441,7 +441,6 @@ public class CPED extends Acteur {
 	        conn = ds.getConnection();
 			s = conn.createStatement();
 			query = "INSERT INTO a_traiter(ordonnance_id, acteur_id) VALUES ('" + ordonnance.getId() + "', '" + destinataire.getId() + "')";
-		    System.out.println(query);
 		    if(deja_a_traiter==false)
 		    {
 		        s.executeQuery(query);

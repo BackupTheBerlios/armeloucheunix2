@@ -418,7 +418,6 @@ public class Ordonnateur extends Acteur {
 		        operation.setComptabilite(getComptaPerso());
 		        operation.setOrdonnance(ordonnance);
 		        getComptaPerso().setSolde(getComptaPerso().getSolde() - ordonnance.getMontant());
-		        System.out.println(getComptaPerso().getSolde());
 		        getComptaPerso().sauver(this);
 		        operation.sauver();
 		        getComptaPerso().addOperation(operation);
@@ -650,7 +649,6 @@ public class Ordonnateur extends Acteur {
 		    conn2 = ds.getConnection();
 			s2 = conn2.createStatement();
 			String q = "SELECT id FROM ordonnance WHERE etat='4' AND initiateur_id='" + getId() + "' AND id NOT IN (SELECT ordonnance_id FROM a_traiter) ORDER BY date DESC";
-			System.out.println(q);
 			res2 = s2.executeQuery(q);
 			
 			while(res2.next())
@@ -761,7 +759,6 @@ public class Ordonnateur extends Acteur {
 			while(res2.next())
 			{
 			    ordonnance.chargeParId(res2.getInt("id"));
-			    System.out.println(ordonnance.getConsommables());
 			    getEnCours().add(0, ordonnance);
 			}
 		}
@@ -811,10 +808,8 @@ public class Ordonnateur extends Acteur {
 			q = "SELECT DISTINCT comptabilite_id, id FROM operation WHERE ordonnance_id='" + ordonnance.getId() + "'";
 			res = s.executeQuery(q);
 			int i =0;
-			System.out.println(q);
 			while(res.next())
 			{
-			    System.out.println(i++);
 			    Operation operation = new Operation(ds);
 			    operation.chargeParId(res.getInt("id"));
 			    Comptabilite compta = new Comptabilite(ds);
@@ -890,7 +885,6 @@ public class Ordonnateur extends Acteur {
 				conn = null;
 			}
 		}
-		System.out.println(q);
 		q = "DELETE FROM a_traiter WHERE ordonnance_id='" + ordonnance.getId() + "'";
 		try
 		{
@@ -924,9 +918,7 @@ public class Ordonnateur extends Acteur {
 				conn = null;
 			}
 		}
-		System.out.println(q);
 		q = "DELETE FROM consomme WHERE ordonnance_id='" + ordonnance.getId() + "'";
-		System.out.println(q);
 		try
 		{
 		    conn = ds.getConnection();
@@ -960,7 +952,6 @@ public class Ordonnateur extends Acteur {
 			}
 		}
 		q = "DELETE FROM operation WHERE ordonnance_id='" + ordonnance.getId() + "'";
-		System.out.println(q);
 		try
 		{
 		    conn = ds.getConnection();

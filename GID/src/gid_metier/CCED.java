@@ -506,7 +506,6 @@ public class CCED extends Acteur {
 			    conn2 = ds.getConnection();
 				s2 = conn2.createStatement();
 				String q = "SELECT id FROM ordonnance WHERE etat='4' AND initiateur_id IN (SELECT id FROM ordonnateur WHERE controleur_id='" + getId() + "') ORDER BY date DESC";
-				System.out.println(q);
 				res2 = s2.executeQuery(q);
 				
 				while(res2.next())

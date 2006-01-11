@@ -846,7 +846,6 @@ public class RequeteSql extends HttpServlet
 			    }
 			    for (int i=1; i<nombreOption +1; i++)
 			    {
-			        System.out.println(i);
 			        int numeroProduit = new Integer(request.getParameter("sel[" + i + "]")).intValue();
 			        int quantiteProduit = new Integer(request.getParameter("selq[" + i + "]")).intValue();
 			        Consommable conso = new Consommable(ds);
