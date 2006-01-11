@@ -185,7 +185,7 @@ if (request.getParameter("lb")!=null)
 {
 	id=new Integer(request.getParameter("lb")).intValue();
 }
-Vector ligneBudgetaire = ligne_budgetaire.retournerTous();
+Vector ligneBudgetaires = ligneBudgetaire.retournerTous();
 
 LigneBudgetaire lbc = new LigneBudgetaire();
 Vector chapitres;
@@ -298,9 +298,9 @@ Nom de l'ordonnance : <input type="text" maxlength="30" name="nom_ordonnance" va
 					<div class="ligne_budgetaire"><b>Ligne budgétaire : </b>
 						<select name="lb" id="lb" onChange="change()">
 							<%
-								for(int i=0; i < ligneBudgetaire.size(); i++)
+								for(int i=0; i < ligneBudgetaires.size(); i++)
 								{
-									LigneBudgetaire lb = (LigneBudgetaire)ligneBudgetaire.elementAt(i);
+									LigneBudgetaire lb = (LigneBudgetaire)ligneBudgetaires.elementAt(i);
 									if(id!=lb.getId())
 									{
 										%>
@@ -323,8 +323,8 @@ Nom de l'ordonnance : <input type="text" maxlength="30" name="nom_ordonnance" va
 								
 								if (request.getParameter("lb")!=null)
 								{
-									lbc.chargeParId(new Integer(request.getParameter("lb")).intValue());
-									chapitres = lbc.retournerChapitres();
+									ligneBudgetaire.chargeParId(new Integer(request.getParameter("lb")).intValue());
+									chapitres = ligneBudgetaire.retournerChapitres();
 									for(int i=0; i<chapitres.size(); i++)
 									{
 										Chapitre c = (Chapitre)chapitres.elementAt(i);
@@ -335,11 +335,11 @@ Nom de l'ordonnance : <input type="text" maxlength="30" name="nom_ordonnance" va
 								}
 								else
 								{
-									Vector line = ligne_budgetaire.retournerTous();
+									Vector line = ligneBudgetaire.retournerTous();
 									if(line.size()>0)
 									{
-										lbc.chargeParId(((LigneBudgetaire)line.elementAt(0)).getId());
-										chapitres = lbc.retournerChapitres();
+										ligneBudgetaire.chargeParId(((LigneBudgetaire)line.elementAt(0)).getId());
+										chapitres = ligneBudgetaire.retournerChapitres();
 										for(int i=0; i<chapitres.size(); i++)
 										{
 											Chapitre c = (Chapitre)chapitres.elementAt(i);

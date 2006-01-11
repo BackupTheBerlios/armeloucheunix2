@@ -14,6 +14,13 @@ import javax.sql.DataSource;
  */
 public class Consommable extends ObjetPersistant {
 
+    public Consommable(DataSource ds)
+    {
+		this.ds = ds;
+    }
+    public Consommable()
+    {
+    }
 /**
  * <p>Represente le libelle du consommable</p>
  * 
@@ -39,18 +46,6 @@ public class Consommable extends ObjetPersistant {
     private int quantite;
 
     
-    public Consommable() 
-    {
-        try 
-        {
-            Context initCtx = new InitialContext();
-            ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
-        }
-        catch (Exception e )
-        {
-            
-        }
-    }
 /**
  * <p>Retourne le libelle du consommable</p>
  * 
@@ -143,8 +138,6 @@ public class Consommable extends ObjetPersistant {
  */
     public void chargeParId(int id) throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
 	    try
 		{
 	        conn = ds.getConnection();
@@ -195,8 +188,6 @@ public class Consommable extends ObjetPersistant {
  */
     public void sauver() throws Exception
     {
-        /*Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query="";
 	    try
 		{
@@ -250,8 +241,6 @@ public class Consommable extends ObjetPersistant {
  */
     public void supprimer() throws Exception
     {
-        /*Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query="";
 	    try
 		{
@@ -300,8 +289,6 @@ public class Consommable extends ObjetPersistant {
     public java.util.Vector retournerTous() throws Exception
     {
         Vector tous = new Vector();
-    	/*Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -309,7 +296,7 @@ public class Consommable extends ObjetPersistant {
 			res = s.executeQuery("SELECT * FROM consommable ORDER BY libelle");
 			while(res.next())
 			{
-			    Consommable c = new Consommable();
+			    Consommable c = new Consommable(ds);
 			    c.setId(res.getInt("id"));
 			    c.setLibelle(res.getString("libelle"));
 			    c.setPrix(res.getInt("prix"));

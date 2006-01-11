@@ -16,10 +16,13 @@ import java.util.GregorianCalendar;
  */
 public class CCED extends Acteur {
 
-    public CCED()throws Exception
+    
+    public CCED ()
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+    }
+    public CCED (DataSource ds)
+    {
+		this.ds = ds;
     }
 	
 /**
@@ -33,8 +36,6 @@ public class CCED extends Acteur {
  */
     public void chargeParId(int id) throws Exception
     {
-       /* Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		try
 		{
 	        conn = ds.getConnection();
@@ -48,7 +49,7 @@ public class CCED extends Acteur {
 				setNom(res.getString("nom"));
 				setPrenom(res.getString("prenom"));
 				
-			    Comptabilite compta = new Comptabilite();
+			    Comptabilite compta = new Comptabilite(ds);
 			    compta.chargeParIdActeur(getId());
 			    setComptaPerso(compta);
 			 }
@@ -60,7 +61,7 @@ public class CCED extends Acteur {
 				res2 = s2.executeQuery("SELECT ordonnance_id FROM a_traiter WHERE a_traiter.acteur_id='" + getId() + "'");
 				while(res2.next())
 				{
-				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
+				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation(ds);
 				    ordon.chargeParId(res2.getInt("ordonnance_id"));
 					addATraiter(ordon);
 				}
@@ -129,8 +130,6 @@ public class CCED extends Acteur {
  */
     public void sauver() throws Exception
     {
-        /*Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -183,8 +182,6 @@ public class CCED extends Acteur {
  */
     public void supprimer() throws Exception
     {
-        /*Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -230,8 +227,6 @@ public class CCED extends Acteur {
     public java.util.Vector retournerTous() throws Exception
     {
     	Vector tous = new Vector();
-    	/*Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -239,7 +234,7 @@ public class CCED extends Acteur {
 			res = s.executeQuery("SELECT * FROM cced ORDER BY nom,prenom");
 			while(res.next())
 			{
-			    CCED ced = new CCED();
+			    CCED ced = new CCED(ds);
 			    ced.setId(res.getInt("id"));
 			    ced.setNom(res.getString("nom"));
 			    ced.setPrenom(res.getString("prenom"));
@@ -286,8 +281,6 @@ public class CCED extends Acteur {
  */
     public void prendreOrdonnanceEnCharge(OrdonnanceDelegation ordonnance) throws Exception
     {
-       /* Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -332,9 +325,7 @@ public class CCED extends Acteur {
  */
     public void majComptabilite(OrdonnanceDelegation ordonnance) throws Exception
     {
-        Operation operation = new Operation();
-        /*Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
+        Operation operation = new Operation(ds);
 	    try
 		{
 	        conn = ds.getConnection();
@@ -407,8 +398,6 @@ public class CCED extends Acteur {
  */
     public void transmettreOrdonnance(OrdonnanceDelegation ordonnance, Acteur destinataire) throws Exception
     {
-        /*Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -457,8 +446,6 @@ public class CCED extends Acteur {
 
     public void authentifie(String login, String password) throws NamingException, Exception
 	{
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
 		try
 		{
 	        conn = ds.getConnection();
@@ -472,7 +459,7 @@ public class CCED extends Acteur {
 				setNom(res.getString("nom"));
 				setPrenom(res.getString("prenom"));
 				
-			    Comptabilite compta = new Comptabilite();
+			    Comptabilite compta = new Comptabilite(ds);
 			    compta.chargeParIdActeur(getId());
 			    setComptaPerso(compta);
 			 }
@@ -483,7 +470,7 @@ public class CCED extends Acteur {
 				res2 = s2.executeQuery("SELECT ordonnance_id FROM a_traiter WHERE a_traiter.acteur_id='" + getId() + "'");
 				while(res2.next())
 				{
-				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
+				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation(ds);
 				    ordon.chargeParId(res2.getInt("ordonnance_id"));
 				    addATraiter(ordon);
 				}
@@ -524,7 +511,7 @@ public class CCED extends Acteur {
 				
 				while(res2.next())
 				{
-				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
+				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation(ds);
 				    ordon.chargeParId(res2.getInt("id"));
 					addArchives(ordon);
 				}
@@ -564,7 +551,7 @@ public class CCED extends Acteur {
 				
 				while(res2.next())
 				{
-				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
+				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation(ds);
 				    ordon.chargeParId(res2.getInt("id"));
 					addEnCours(ordon);
 				}
@@ -631,8 +618,6 @@ public class CCED extends Acteur {
  */
     public void viser(gid_metier.OrdonnanceDelegation ordonnance) throws Exception, Exception
     {        
-        /*Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();

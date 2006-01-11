@@ -17,19 +17,13 @@ import javax.sql.DataSource;
  */
 public class TG extends Acteur {
 
-	
-public TG()
-{
-    try 
+    public TG()
     {
-        Context initCtx = new InitialContext();
-        ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
     }
-    catch (Exception e )
-    {
-        
-    }
-}
+	public TG(DataSource ds)
+	{
+		this.ds = ds;
+	}
 /**
  * <p>Charge (depuis le SGBD) l'objet correspondant a l'identifiant pass&eacute; en param&egrave;tre.</p>
  * <p>Cette op&eacute;ration correspont a une transaction.</p>
@@ -41,8 +35,6 @@ public TG()
  */
     public void chargeParId(int id) throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
 		try
 		{
 	        conn = ds.getConnection();
@@ -56,7 +48,7 @@ public TG()
 				setNom(res.getString("nom"));
 				setPrenom(res.getString("prenom"));
 				
-				Comptabilite compta = new Comptabilite();
+				Comptabilite compta = new Comptabilite(ds);
 			    compta.chargeParIdActeur(getId());
 			    setComptaPerso(compta);
 			 }
@@ -68,7 +60,7 @@ public TG()
 				res2 = s2.executeQuery("SELECT ordonnance_id FROM a_traiter WHERE a_traiter.acteur_id='" + getId() + "'");
 				while(res2.next())
 				{
-				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
+				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation(ds);
 				    ordon.chargeParId(res2.getInt("ordonnance_id"));
 					addATraiter(ordon);
 				}
@@ -137,8 +129,6 @@ public TG()
  */
     public void sauver() throws Exception
     {
-       /* Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -191,8 +181,6 @@ public TG()
  */
     public void supprimer() throws Exception
     {
-       /* Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -238,8 +226,6 @@ public TG()
     public java.util.Vector retournerTous() throws Exception
     {
         Vector tous = new Vector();
-    	/*Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -247,7 +233,7 @@ public TG()
 			res = s.executeQuery("SELECT * FROM tg ORDER BY nom,prenom");
 			while(res.next())
 			{
-			    TG tg = new TG();
+			    TG tg = new TG(ds);
 			    tg.setId(res.getInt("id"));
 			    tg.setNom(res.getString("nom"));
 			    tg.setPrenom(res.getString("prenom"));
@@ -294,8 +280,6 @@ public TG()
  */
     public void prendreOrdonnanceEnCharge(OrdonnanceDelegation ordonnance) throws Exception
     {
-       /* Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -340,9 +324,7 @@ public TG()
  */
     public void majComptabilite(OrdonnanceDelegation ordonnance) throws Exception
     {
-        Operation operation = new Operation();
-        /*Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
+        Operation operation = new Operation(ds);
 	    try
 		{
 	        conn = ds.getConnection();
@@ -413,8 +395,6 @@ public TG()
  */
     public void transmettreOrdonnance(OrdonnanceDelegation ordonnance, Acteur destinataire) throws Exception
     {
-        /*Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -463,8 +443,6 @@ public TG()
 
 	public void authentifie(String login, String password) throws NamingException, Exception
 	{
-	    Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
 		try
 		{
 	        conn = ds.getConnection();
@@ -478,7 +456,7 @@ public TG()
 				setNom(res.getString("nom"));
 				setPrenom(res.getString("prenom"));
 				
-			    Comptabilite compta = new Comptabilite();
+			    Comptabilite compta = new Comptabilite(ds);
 			    compta.chargeParIdActeur(getId());
 			    setComptaPerso(compta);
 			 }
@@ -490,7 +468,7 @@ public TG()
 				res2 = s2.executeQuery("SELECT ordonnance_id FROM a_traiter WHERE a_traiter.acteur_id='" + getId() + "'");
 				while(res2.next())
 				{
-				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
+				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation(ds);
 				    ordon.chargeParId(res2.getInt("ordonnance_id"));
 					addATraiter(ordon);
 				}
@@ -558,7 +536,7 @@ public TG()
 			
 			while(res2.next())
 			{
-			    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
+			    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation(ds);
 			    ordon.chargeParId(res2.getInt("id"));
 				addArchives(ordon);
 			}
@@ -599,7 +577,7 @@ public TG()
 			
 			while(res2.next())
 			{
-			    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
+			    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation(ds);
 			    ordon.chargeParId(res2.getInt("id"));
 				addEnCours(ordon);
 			}
@@ -640,8 +618,6 @@ public TG()
  */
     public void viser(OrdonnanceDelegation ordonnance) throws Exception
     {        
-        /*Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();

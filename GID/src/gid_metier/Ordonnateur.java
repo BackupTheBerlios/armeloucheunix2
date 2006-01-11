@@ -22,13 +22,17 @@ public class Ordonnateur extends Acteur {
  * 
  */
     private gid_metier.CCED controleur;
-    
-    public Ordonnateur() throws Exception
+    public Ordonnateur()
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
+		
+    }
+    
+    public Ordonnateur(DataSource ds) throws Exception
+    {
+		this.ds = ds;
     }
 
+    
     /** @poseidon-generated */
     public gid_metier.CCED getControleur() {
         return controleur;
@@ -51,8 +55,6 @@ public class Ordonnateur extends Acteur {
  */
     public void chargeParId(int id) throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
 		try
 		{
 	        conn = ds.getConnection();
@@ -66,13 +68,13 @@ public class Ordonnateur extends Acteur {
 				setNom(res.getString("nom"));
 				setPrenom(res.getString("prenom"));
 				
-				CCED cced = new CCED();
+				CCED cced = new CCED(ds);
 				cced.setId(res.getInt("controleur_id"));
 				cced.setNom(res.getString("nom_cced"));
 				cced.setPrenom(res.getString("prenom_cced"));
 				setControleur(cced);
 				
-			    Comptabilite compta = new Comptabilite();
+			    Comptabilite compta = new Comptabilite(ds);
 			    compta.chargeParIdActeur(getId());
 			    setComptaPerso(compta);
 			 }
@@ -83,7 +85,7 @@ public class Ordonnateur extends Acteur {
 				res2 = s2.executeQuery("SELECT ordonnance_id FROM a_traiter WHERE a_traiter.acteur_id='" + getId() + "' ORDER BY date desc");
 				while(res2.next())
 				{
-				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
+				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation(ds);
 				    ordon.chargeParId(res2.getInt("ordonnance_id"));
 					addATraiter(ordon);
 				}
@@ -122,7 +124,7 @@ public class Ordonnateur extends Acteur {
 				res2 = s2.executeQuery(q);
 				while(res2.next())
 				{
-				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
+				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation(ds);
 				    ordon.chargeParId(res2.getInt("id"));
 					addArchives(ordon);
 				}
@@ -191,8 +193,6 @@ public class Ordonnateur extends Acteur {
  */
     public void sauver() throws Exception
     {
-        /*Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -245,8 +245,6 @@ public class Ordonnateur extends Acteur {
  */
     public void supprimer() throws Exception
     {
-        /*Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -292,8 +290,6 @@ public class Ordonnateur extends Acteur {
     public Vector retournerTous() throws Exception
     {
         Vector tous = new Vector();
-       /* Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query = "";
 	    try
 		{
@@ -303,7 +299,7 @@ public class Ordonnateur extends Acteur {
 			res = s.executeQuery(query);
 			while(res.next())
 			{
-			    Ordonnateur ordo = new Ordonnateur();
+			    Ordonnateur ordo = new Ordonnateur(ds);
 			    ordo.setId(res.getInt("id"));
 			    ordo.setNom(res.getString("nom"));
 			    ordo.setPrenom(res.getString("prenom"));
@@ -350,8 +346,6 @@ public class Ordonnateur extends Acteur {
  */
     public void prendreOrdonnanceEnCharge(OrdonnanceDelegation ordonnance) throws Exception
     {
-        /*Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -396,9 +390,7 @@ public class Ordonnateur extends Acteur {
  */
     public void majComptabilite(OrdonnanceDelegation ordonnance) throws Exception
     {
-        Operation operation = new Operation();
-        /*Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
+        Operation operation = new Operation(ds);
 	    try
 		{
 	        conn = ds.getConnection();
@@ -470,8 +462,6 @@ public class Ordonnateur extends Acteur {
  */
     public void transmettreOrdonnance(OrdonnanceDelegation ordonnance, Acteur destinataire) throws Exception
     {
-       /* Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		boolean deja_a_traiter = false;
 		String query;
 		try
@@ -579,13 +569,13 @@ public class Ordonnateur extends Acteur {
 				setNom(res.getString("nom"));
 				setPrenom(res.getString("prenom"));
 				
-				CCED cced = new CCED();
+				CCED cced = new CCED(ds);
 				cced.setId(res.getInt("controleur_id"));
 				cced.setNom(res.getString("nom_cced"));
 				cced.setPrenom(res.getString("prenom_cced"));
 				setControleur(cced);
 				
-			    Comptabilite compta = new Comptabilite();
+			    Comptabilite compta = new Comptabilite(ds);
 			    compta.chargeParIdActeur(getId());
 			    setComptaPerso(compta);
 			 }
@@ -597,7 +587,7 @@ public class Ordonnateur extends Acteur {
 				res2 = s2.executeQuery("SELECT ordonnance_id FROM a_traiter WHERE a_traiter.acteur_id='" + getId() + "'");
 				while(res2.next())
 				{
-				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
+				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation(ds);
 				    ordon.chargeParId(res2.getInt("ordonnance_id"));
 				   	addATraiter(ordon);
 				}
@@ -665,7 +655,7 @@ public class Ordonnateur extends Acteur {
 			
 			while(res2.next())
 			{
-			    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
+			    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation(ds);
 			    ordon.chargeParId(res2.getInt("id"));
 			    addArchives(ordon);
 			}
@@ -705,7 +695,7 @@ public class Ordonnateur extends Acteur {
 			
 			while(res2.next())
 			{
-			    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
+			    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation(ds);
 			    ordon.chargeParId(res2.getInt("id"));
 			    addEnCours(ordon);
 			}
@@ -751,7 +741,7 @@ public class Ordonnateur extends Acteur {
         ordonnance.sauver();
         GregorianCalendar dateG = new GregorianCalendar();
 	    java.util.Date date = dateG.getTime();
-        Action act = new Action();
+        Action act = new Action(ds);
 	    act.setLibelle("Autre");
 	    act.setDate(date);
 	    act.setType(4);
@@ -825,9 +815,9 @@ public class Ordonnateur extends Acteur {
 			while(res.next())
 			{
 			    System.out.println(i++);
-			    Operation operation = new Operation();
+			    Operation operation = new Operation(ds);
 			    operation.chargeParId(res.getInt("id"));
-			    Comptabilite compta = new Comptabilite();
+			    Comptabilite compta = new Comptabilite(ds);
 			    compta.chargeParId(res.getInt("comptabilite_id"));
 			    if(compta.getId()!= getComptaPerso().getId())
 			    {

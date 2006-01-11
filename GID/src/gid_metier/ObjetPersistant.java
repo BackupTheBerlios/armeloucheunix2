@@ -30,6 +30,7 @@ public abstract class ObjetPersistant {
     protected static java.sql.Connection conn;
     protected static java.sql.Connection conn2;
 
+    
 /**
  * <p>Retourne id</p>
  * 
@@ -49,7 +50,11 @@ public abstract class ObjetPersistant {
     public void setId(int _id) {        
         id = _id;
     } 
-
+    
+    public void setDataSource(DataSource ds)
+    {
+        this.ds = ds;
+    }
 /**
  * <p>Retourne la connexion au SGBD</p>
  * 

@@ -5,7 +5,7 @@
 <jsp:useBean id="comptabilite" class="gid_metier.Comptabilite" scope="session" />
 <jsp:useBean id="consommable" class="gid_metier.Consommable" scope="session" />
 <jsp:useBean id="cped" class="gid_metier.CPED" scope="session" />
-<jsp:useBean id="ligne_budgetaire" class="gid_metier.LigneBudgetaire" scope="session" />
+<jsp:useBean id="ligneBudgetaire" class="gid_metier.LigneBudgetaire" scope="session" />
 <jsp:useBean id="operation" class="gid_metier.Operation" scope="session" />
 <jsp:useBean id="ordonnateur" class="gid_metier.Ordonnateur" scope="session" />
 <jsp:useBean id="sousOrdonnateur" class="gid_metier.SousOrdonnateur" scope="session" />

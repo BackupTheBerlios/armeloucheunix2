@@ -14,6 +14,14 @@ import javax.sql.DataSource;
  */
 public class Operation extends ObjetPersistant {
 
+    
+    public Operation(DataSource ds)
+    {
+		this.ds = ds;
+    }
+    public Operation()
+    {
+    }
 /**
  * <p>Represente le libelle de l'operation</p>
  * 
@@ -40,11 +48,6 @@ public class Operation extends ObjetPersistant {
 
     private OrdonnanceDelegation ordon;
     
-    public Operation() throws Exception
-    {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
-    }
     
     public OrdonnanceDelegation getOrdonnance()
     {
@@ -156,8 +159,6 @@ public class Operation extends ObjetPersistant {
     
     public void chargeParId(int id) throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
 	    try
 		{
 	        conn = ds.getConnection();
@@ -171,10 +172,10 @@ public class Operation extends ObjetPersistant {
 		        setMontant(res.getInt("montant"));
 		        setDate(res.getDate("date"));
 		        setType(res.getString("type"));
-		        Comptabilite compta = new Comptabilite();
+		        Comptabilite compta = new Comptabilite(ds);
 		        compta.chargeParId(res.getInt("comptabilite_id"));
 		        setComptabilite(compta);
-		        OrdonnanceDelegation ordonnance = new OrdonnanceDelegation();
+		        OrdonnanceDelegation ordonnance = new OrdonnanceDelegation(ds);
 		        ordonnance.chargeParId(res.getInt("ordonnance_id"));
 		        setOrdonnance(ordonnance);
 			}
@@ -209,8 +210,6 @@ public class Operation extends ObjetPersistant {
     
     public void chargeParIdCompta(int id) throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
 	    try
 		{
 	        conn = ds.getConnection();
@@ -224,11 +223,10 @@ public class Operation extends ObjetPersistant {
 		        setMontant(res.getInt("montant"));
 		        setDate(res.getDate("date"));
 		        setType(res.getString("type"));
-		        Comptabilite compta = new Comptabilite();
+		        Comptabilite compta = new Comptabilite(ds);
 		        compta.setId(res.getInt("comptabilite_id"));
-		        //compta.chargeParId(res.getInt("comptabilite_id"));
 		        setComptabilite(compta);
-		        OrdonnanceDelegation ordonnance = new OrdonnanceDelegation();
+		        OrdonnanceDelegation ordonnance = new OrdonnanceDelegation(ds);
 		        ordonnance.chargeParId(res.getInt("ordonnance_id"));
 		        setOrdonnance(ordonnance);
 			}
@@ -270,8 +268,6 @@ public class Operation extends ObjetPersistant {
      */
     public void sauver() throws Exception
     {
-        /*Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query="";
 	    try
 		{
@@ -327,8 +323,6 @@ public class Operation extends ObjetPersistant {
  */
     public void supprimer() throws Exception
     {
-       /* Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -373,8 +367,6 @@ public class Operation extends ObjetPersistant {
  */
     public Vector retournerTous() throws Exception
     {
-       /* Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query="";
 		Vector tous = new Vector();
 	    try
@@ -385,7 +377,7 @@ public class Operation extends ObjetPersistant {
 			res = s.executeQuery(query);
 			while(res.next())
 			{
-			    Operation ope = new Operation();
+			    Operation ope = new Operation(ds);
 			    ope.chargeParId(res.getInt("id"));
 			    tous.addElement(ope);
 			}

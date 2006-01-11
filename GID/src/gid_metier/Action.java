@@ -14,6 +14,13 @@ import java.util.Vector;
  */
 public class Action extends ObjetPersistant {
 
+    public Action ()
+    {
+    }
+    public Action (DataSource ds)
+    {
+		this.ds = ds;
+    }
 /**
  * <p>Represente la date de l'action</p>
  * 
@@ -69,6 +76,9 @@ public class Action extends ObjetPersistant {
 
     
     private gid_metier.OrdonnanceDelegation ordonnance;
+    
+ 
+    
 /**
  * <p>Retourne la date de l'action</p>
  * 
@@ -145,11 +155,6 @@ public class Action extends ObjetPersistant {
     public void setOrdonnance(gid_metier.OrdonnanceDelegation ordonnance) {
         this.ordonnance = ordonnance;
     }
-   public Action()throws Exception
-   {
-       Context initCtx = new InitialContext();
-       ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
-   }
     
 /**
  * <p>Charge (depuis le SGBD) l'objet correspondant a l'identifiant pass&eacute; en param&egrave;tre.</p>
@@ -174,38 +179,38 @@ public class Action extends ObjetPersistant {
 		        setDate(res.getDate("date"));
 		        setType(res.getInt("type"));
 		        setLibelle(res.getString("libelle"));
-		        OrdonnanceDelegation ordo = new OrdonnanceDelegation();
+		        OrdonnanceDelegation ordo = new OrdonnanceDelegation(ds);
 		        ordo.chargeParId(res.getInt("ordonnance_id"));
 		        setOrdonnance(ordo);
 		        Acteur participant=null;
 		        if (res.getString("role").equalsIgnoreCase("TG"))
 			    {
-		            participant = new TG();
+		            participant = new TG(ds);
 					participant.chargeParId(res.getInt("participant_id"));
 			    }
 			    else if (res.getString("role").equalsIgnoreCase("cced"))
 			    {
-			        participant = new CCED();
+			        participant = new CCED(ds);
 			        participant.chargeParId(res.getInt("participant_id"));
 			    }
 			    else if (res.getString("role").equalsIgnoreCase("cped"))
 			    {
-			        participant = new CPED();
+			        participant = new CPED(ds);
 			        participant.chargeParId(res.getInt("participant_id"));
 			    }
 			    else if (res.getString("role").equalsIgnoreCase("ordonnateur"))
 			    {
-			        participant = new Ordonnateur();
+			        participant = new Ordonnateur(ds);
 			        participant.chargeParId(res.getInt("participant_id"));
 			    }
 			    else if (res.getString("role").equalsIgnoreCase("sousordonnateur"))
 			    {
-			        participant = new SousOrdonnateur();
+			        participant = new SousOrdonnateur(ds);
 			        participant.chargeParId(res.getInt("participant_id"));
 			    }
 			    else if (res.getString("role").equalsIgnoreCase("tr_tp"))
 			    {
-			        participant = new TR_TP();
+			        participant = new TR_TP(ds);
 			        participant.chargeParId(res.getInt("participant_id"));
 			    }
 			    setParticipant(participant);
@@ -248,8 +253,6 @@ public class Action extends ObjetPersistant {
  */
     public void sauver() throws Exception
     {
-        /*Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query="";
 	    try
 		{
@@ -303,8 +306,6 @@ public class Action extends ObjetPersistant {
  */
     public void supprimer() throws Exception
     {
-        /*Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query="";
 	    try
 		{
@@ -351,8 +352,6 @@ public class Action extends ObjetPersistant {
  */
     public Vector retournerTous() throws Exception
     {
-        /*Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query="";
 		Vector tous = new Vector();
 	    try
@@ -363,7 +362,7 @@ public class Action extends ObjetPersistant {
 			res = s.executeQuery(query);
 			while(res.next())
 			{
-			    Action act = new Action();
+			    Action act = new Action(ds);
 			    act.chargeParId(res.getInt("id"));
 			    tous.addElement(act);
 			}

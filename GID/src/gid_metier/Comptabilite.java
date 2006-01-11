@@ -15,6 +15,13 @@ import java.util.Vector;
  */
 public class Comptabilite extends ObjetPersistant {
 
+    public Comptabilite(DataSource ds)
+    {
+		this.ds = ds;
+    }
+    public Comptabilite()
+    {
+    }
 /**
  * <p>Represente le solde de la comptabilit&eacute;</p>
  * 
@@ -28,18 +35,6 @@ public class Comptabilite extends ObjetPersistant {
  */
     private java.util.Vector operation = new java.util.Vector();
     
-    public Comptabilite() 
-    {
-        try 
-        {
-            Context initCtx = new InitialContext();
-            ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
-        }
-        catch (Exception e)
-        {
-            
-        }
-    }
 
 /**
  * <p>Retourne le solde de la comptabilit&eacute;</p>
@@ -97,14 +92,11 @@ public class Comptabilite extends ObjetPersistant {
  */
     public void chargeParId(int id) throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
 	    try
 		{
 	        conn = ds.getConnection();
 			s = conn.createStatement();
 			String query = "SELECT * FROM comptabilite WHERE id='" + id + "'" ;
-			System.out.println(query);
 			res = s.executeQuery(query);
 			if (res.next())
 			{
@@ -117,7 +109,7 @@ public class Comptabilite extends ObjetPersistant {
 					res2 = s2.executeQuery("SELECT id FROM operation WHERE comptabilite_id='" + getId() + "'");
 					while(res2.next())
 					{
-					    Operation op = new Operation();
+					    Operation op = new Operation(ds);
 					    op.chargeParIdCompta(res2.getInt("id"));
 					    addOperation(op);
 					}
@@ -180,8 +172,6 @@ public class Comptabilite extends ObjetPersistant {
     
     public void chargeParIdActeur(int id) throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
 		operation = new Vector();
 	    try
 		{
@@ -196,7 +186,7 @@ public class Comptabilite extends ObjetPersistant {
 			    res = s.executeQuery("SELECT * FROM operation WHERE comptabilite_id='" + getId() + "'");
 			    while (res.next())
 			    {
-			        Operation op = new Operation();
+			        Operation op = new Operation(ds);
 			        op.setId(res.getInt("id"));
 			        op.setLibelle(res.getString("libelle"));
 			        op.setMontant(res.getInt("montant"));
@@ -250,8 +240,6 @@ public class Comptabilite extends ObjetPersistant {
  */
     public void sauver(Acteur acteur) throws Exception
     {
-       /* Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -305,8 +293,6 @@ public class Comptabilite extends ObjetPersistant {
  */
     public void supprimer() throws Exception
     {
-        /*Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -351,8 +337,6 @@ public class Comptabilite extends ObjetPersistant {
  */
     public Vector retournerTous() throws Exception
     {
-        /*Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query="";
 		Vector tous = new Vector();
 	    try
@@ -363,7 +347,7 @@ public class Comptabilite extends ObjetPersistant {
 			res = s.executeQuery(query);
 			while(res.next())
 			{
-			    Comptabilite compta = new Comptabilite();
+			    Comptabilite compta = new Comptabilite(ds);
 			    compta.chargeParId(res.getInt("id"));
 			    tous.addElement(compta);
 			}

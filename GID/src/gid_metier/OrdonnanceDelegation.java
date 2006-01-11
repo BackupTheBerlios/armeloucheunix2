@@ -14,6 +14,14 @@ import java.util.Vector;
  */
 public class OrdonnanceDelegation extends ObjetPersistant {
 
+    
+    public OrdonnanceDelegation(DataSource ds)
+    {
+		this.ds = ds;
+    }
+    public OrdonnanceDelegation()
+    {
+    }
 /**
  * <p>Represente le libelle</p>
  * 
@@ -125,18 +133,6 @@ public class OrdonnanceDelegation extends ObjetPersistant {
     private java.util.Collection action = new java.util.TreeSet();
 
     
-    public OrdonnanceDelegation()
-    {
-        try 
-        {
-            Context initCtx = new InitialContext();
-            ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
-        }
-        catch (Exception e )
-        {
-            
-        }
-    }
 /**
  * <p>Retourne le libelle</p>
  * 
@@ -426,8 +422,6 @@ public class OrdonnanceDelegation extends ObjetPersistant {
  */
     public void chargeParId(int id) throws Exception
     {
-        /*Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query="";
 		consommable = new Vector();
 		 try
@@ -450,17 +444,17 @@ public class OrdonnanceDelegation extends ObjetPersistant {
 			    setRefVisaTG(res.getString("ref_visatg"));
 			    setDateVisaTG(res.getDate("date_visatg"));
 			    
-			    Ordonnateur initiateur = new Ordonnateur();
+			    Ordonnateur initiateur = new Ordonnateur(ds);
 			    initiateur.setId(res.getInt("initiateur_id"));
 			    initiateur.setNom(res.getString("initiateur_nom"));
 			    initiateur.setPrenom(res.getString("initiateur_prenom"));
 			    
-			    SousOrdonnateur delegataire = new SousOrdonnateur();
+			    SousOrdonnateur delegataire = new SousOrdonnateur(ds);
 			    delegataire.setId(res.getInt("delegataire_id"));
 			    delegataire.setNom(res.getString("delegataire_nom"));
 			    delegataire.setPrenom(res.getString("delegataire_prenom"));
 			    
-			    TG comptable = new TG();
+			    TG comptable = new TG(ds);
 			    comptable.setId(res.getInt("comptable_id"));
 			    comptable.setNom(res.getString("comptable_nom"));
 			    comptable.setPrenom(res.getString("comptable_prenom"));
@@ -475,7 +469,7 @@ public class OrdonnanceDelegation extends ObjetPersistant {
 					res2 = s2.executeQuery("SELECT * FROM consomme,consommable  WHERE ordonnance_id='" + getId() + "' AND consommable_id=id");
 					while(res2.next())
 					{
-					    Consommable conso = new Consommable();
+					    Consommable conso = new Consommable(ds);
 					    conso.chargeParId(res2.getInt("id"));
 					    conso.setQuantite(res2.getInt("quantite"));
 					    addConsommable(conso);
@@ -540,8 +534,6 @@ public class OrdonnanceDelegation extends ObjetPersistant {
     
     public void clore() throws Exception
     {
-       /* Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query="UPDATE ordonnance set etat='4' WHERE id='" + getId() + "'";
 		try
 		{
@@ -585,8 +577,6 @@ public class OrdonnanceDelegation extends ObjetPersistant {
  */
     public void sauver() throws Exception
     {
-       /* Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query="";
 		
 		if(getId()==0)
@@ -701,8 +691,6 @@ public class OrdonnanceDelegation extends ObjetPersistant {
  */
     public void supprimer() throws Exception
     {
-       /* Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -748,8 +736,6 @@ public class OrdonnanceDelegation extends ObjetPersistant {
     public java.util.Vector retournerTous() throws Exception
     {
         Vector tous = new Vector();
-    	/*Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 	    try
 		{
 	        conn = ds.getConnection();
@@ -757,7 +743,7 @@ public class OrdonnanceDelegation extends ObjetPersistant {
 			res = s.executeQuery("SELECT id FROM ordonnance ORDER BY libelle");
 			while(res.next())
 			{
-			    OrdonnanceDelegation ordo = new OrdonnanceDelegation();
+			    OrdonnanceDelegation ordo = new OrdonnanceDelegation(ds);
 			    ordo.chargeParId(res.getInt("id"));
 			    tous.addElement(ordo);
 			}

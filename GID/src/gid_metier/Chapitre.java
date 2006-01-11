@@ -14,6 +14,14 @@ import java.util.Vector;
  */
 public class Chapitre extends ObjetPersistant {
 
+    
+    public Chapitre(DataSource ds)
+    {
+		this.ds = ds;
+    }
+    public Chapitre()
+    {
+    }
 /**
  * <p>Represente le code du chapitre dans la nomenclature GID</p>
  * 
@@ -31,11 +39,6 @@ public class Chapitre extends ObjetPersistant {
  */
     private gid_metier.LigneBudgetaire ligneBudgetaire;
     
-    public Chapitre() throws Exception
-    {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
-    }
 
 /**
  * <p>Retourne le code du chapitre</p>
@@ -98,8 +101,6 @@ public class Chapitre extends ObjetPersistant {
  */
     public void chargeParId(int id) throws Exception
     {
-        Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");
 		String query="";
 		 try
 		 {
@@ -152,8 +153,6 @@ public class Chapitre extends ObjetPersistant {
  */
     public void sauver() throws Exception
     {
-        /*Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query="";
 	    try
 		{
@@ -207,8 +206,6 @@ public class Chapitre extends ObjetPersistant {
  */
     public void supprimer() throws Exception
     {
-        /*Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query="";
 	    try
 		{
@@ -255,8 +252,6 @@ public class Chapitre extends ObjetPersistant {
  */
     public java.util.Vector retournerTous() throws Exception
     {
-        /*Context initCtx = new InitialContext();
-		ds = (DataSource) initCtx.lookup("java:comp/env/jdbc/RequeteSql");*/
 		String query="";
 		Vector tous = new Vector();
 	    try
@@ -267,7 +262,7 @@ public class Chapitre extends ObjetPersistant {
 			res = s.executeQuery(query);
 			while(res.next())
 			{
-			    Chapitre chap = new Chapitre();
+			    Chapitre chap = new Chapitre(ds);
 			    chap.chargeParId(res.getInt("id"));
 			    tous.addElement(chap);
 			}

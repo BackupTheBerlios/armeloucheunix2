@@ -35,7 +35,8 @@ public class RequeteSql extends HttpServlet
 		gid_metier.SousOrdonnateur sousOrdonnateur = null;
 		gid_metier.TG tg = null;
 		gid_metier.TR_TP tr_tp = null;
-
+		gid_metier.LigneBudgetaire ligneBudgetaire = null;
+		gid_metier.Consommable consommable = null;
 		Vector etats = null;
 		java.util.Vector ordo = null;
 	    java.util.Vector ordonnances=null;
@@ -55,38 +56,51 @@ public class RequeteSql extends HttpServlet
 	        {
 	            ordonnateur=(gid_metier.Ordonnateur)Beans.instantiate(this.getClass().getClassLoader(), "gid_metier.Ordonnateur" );
 				pageContext.setAttribute("ordonnateur", ordonnateur, PageContext.SESSION_SCOPE );
+				ordonnateur.setDataSource(ds);
 	        }
 	        tg = (TG)pageContext.getAttribute("tg",PageContext.SESSION_SCOPE);
 	        if(tg==null)
 	        {
 				tg=(gid_metier.TG)Beans.instantiate(this.getClass().getClassLoader(), "gid_metier.TG" );
 				pageContext.setAttribute("tg", tg, PageContext.SESSION_SCOPE );
+				tg.setDataSource(ds);
 	        }
 	        tr_tp = (TR_TP)pageContext.getAttribute("tr_tp",PageContext.SESSION_SCOPE);
 	        if (tr_tp==null)
 	        {
 				tr_tp=(gid_metier.TR_TP)Beans.instantiate(this.getClass().getClassLoader(), "gid_metier.TR_TP" );
 				pageContext.setAttribute("tr_tp", tr_tp, PageContext.SESSION_SCOPE );
+				tr_tp.setDataSource(ds);
 	        }
 	        cced = (CCED)pageContext.getAttribute("cced",PageContext.SESSION_SCOPE);
 	        if (cced==null)
 	        {
 				cced=(gid_metier.CCED)Beans.instantiate(this.getClass().getClassLoader(), "gid_metier.CCED" );
 				pageContext.setAttribute("cced", cced, PageContext.SESSION_SCOPE );
+				cced.setDataSource(ds);
 	        }
 	        cped = (CPED)pageContext.getAttribute("cped",PageContext.SESSION_SCOPE);
 	        if (cped==null)
 	        {
 				cped=(gid_metier.CPED)Beans.instantiate(this.getClass().getClassLoader(), "gid_metier.CPED" );
 				pageContext.setAttribute("cped", cped, PageContext.SESSION_SCOPE );
+				cped.setDataSource(ds);
 	        }
 	        sousOrdonnateur = (SousOrdonnateur)pageContext.getAttribute("sousOrdonnateur",PageContext.SESSION_SCOPE);
 	        if (sousOrdonnateur==null)
 	        { 
 				sousOrdonnateur=(gid_metier.SousOrdonnateur)Beans.instantiate(this.getClass().getClassLoader(), "gid_metier.SousOrdonnateur" );
 				pageContext.setAttribute("sousOrdonnateur", sousOrdonnateur, PageContext.SESSION_SCOPE );
+				sousOrdonnateur.setDataSource(ds);
 	        }
-	       			
+	        ligneBudgetaire = (LigneBudgetaire)pageContext.getAttribute("ligneBudgetaire",PageContext.SESSION_SCOPE);
+	        if (ligneBudgetaire==null)
+	        { 
+				ligneBudgetaire=(gid_metier.LigneBudgetaire)Beans.instantiate(this.getClass().getClassLoader(), "gid_metier.LigneBudgetaire" );
+				pageContext.setAttribute("ligneBudgetaire", ligneBudgetaire, PageContext.SESSION_SCOPE );
+				ligneBudgetaire.setDataSource(ds);
+	        }	
+	        
 			if (request.getParameter("action") != null )
 			{
 				action = request.getParameter("action");
@@ -117,21 +131,36 @@ public class RequeteSql extends HttpServlet
 				{
 				    ordonnateur=(gid_metier.Ordonnateur)Beans.instantiate(this.getClass().getClassLoader(), "gid_metier.Ordonnateur" );
 					pageContext.setAttribute("ordonnateur", ordonnateur, PageContext.SESSION_SCOPE );
-						   
+					ordonnateur.setDataSource(ds);
+					
 					sousOrdonnateur=(gid_metier.SousOrdonnateur)Beans.instantiate(this.getClass().getClassLoader(), "gid_metier.SousOrdonnateur" );
 					pageContext.setAttribute("sousOrdonnateur", sousOrdonnateur, PageContext.SESSION_SCOPE );
+					sousOrdonnateur.setDataSource(ds);
 					
 					cced=(gid_metier.CCED)Beans.instantiate(this.getClass().getClassLoader(), "gid_metier.CCED" );
 					pageContext.setAttribute("cced", cced, PageContext.SESSION_SCOPE );
+					cced.setDataSource(ds);
 					
 					cped=(gid_metier.CPED)Beans.instantiate(this.getClass().getClassLoader(), "gid_metier.CPED" );
 					pageContext.setAttribute("cped", cped, PageContext.SESSION_SCOPE );
+					cped.setDataSource(ds);
 					
 					tg=(gid_metier.TG)Beans.instantiate(this.getClass().getClassLoader(), "gid_metier.TG" );
 					pageContext.setAttribute("tg", tg, PageContext.SESSION_SCOPE );
+					tg.setDataSource(ds);
 					
 					tr_tp=(gid_metier.TR_TP)Beans.instantiate(this.getClass().getClassLoader(), "gid_metier.TR_TP" );
 					pageContext.setAttribute("tr_tp", tr_tp, PageContext.SESSION_SCOPE );
+					tr_tp.setDataSource(ds);
+					
+					ligneBudgetaire=(gid_metier.LigneBudgetaire)Beans.instantiate(this.getClass().getClassLoader(), "gid_metier.LigneBudgetaire" );
+					pageContext.setAttribute("ligneBudgetaire", ligneBudgetaire, PageContext.SESSION_SCOPE );
+					ligneBudgetaire.setDataSource(ds);
+					
+					consommable=(gid_metier.Consommable)Beans.instantiate(this.getClass().getClassLoader(), "gid_metier.Consommable" );
+					pageContext.setAttribute("consommable", consommable, PageContext.SESSION_SCOPE );
+					consommable.setDataSource(ds);
+			        
 				}
 			    catch( Exception e )
 				{
@@ -150,7 +179,6 @@ public class RequeteSql extends HttpServlet
 				
 				try
 				{
-				    ResultSet res = null;
 				    conn = ds.getConnection();
 					s = conn.createStatement();
 					res = s.executeQuery("SELECT role FROM (SELECT id,login,mdp,'Ordonnateur' as role FROM ordonnateur UNION SELECT id,login,mdp,'SousOrdonnateur' as role FROM sousordonnateur UNION SELECT id,login,mdp,'CCED' as role FROM cced UNION SELECT id,login,mdp,'CPED' as role FROM cped UNION SELECT id,login,mdp,'TG' as role FROM tg UNION SELECT id,login,mdp,'TR_TP' as role FROM tr_tp) as foo WHERE login='" + request.getParameter("identifiant") + "' AND mdp='" + request.getParameter("password") + "'");
@@ -459,7 +487,7 @@ public class RequeteSql extends HttpServlet
 			    	    cced.transmettreOrdonnance(ordon, acteur);
 			    	    cced.prendreOrdonnanceEnCharge(ordon);
 			    	    cced.addEnCours(ordon);
-			    	    Action act = new Action();
+			    	    Action act = new Action(ds);
 			    	    act.setLibelle("Prise en charge");
 			    	    act.setDate(date);
 			    	    act.setType(1);
@@ -489,7 +517,7 @@ public class RequeteSql extends HttpServlet
 			            cped.prendreOrdonnanceEnCharge(ordon);
 			            cped.majComptabilite(ordon);
 	    		        cped.addEnCours(ordon);
-			            Action act = new Action();
+			            Action act = new Action(ds);
 			    	    act.setLibelle("Prise en charge");
 			    	    act.setDate(date);
 			    	    act.setType(1);
@@ -565,7 +593,7 @@ public class RequeteSql extends HttpServlet
 			            ordonnateur.prendreOrdonnanceEnCharge(ordon);
 			            ordonnateur.majComptabilite(ordon);
 			            ordonnateur.addEnCours(ordon);
-			            Action act = new Action();
+			            Action act = new Action(ds);
 			    	    act.setLibelle("Prise en charge");
 			    	    act.setDate(date);
 			    	    act.setType(1);
@@ -607,7 +635,7 @@ public class RequeteSql extends HttpServlet
 			            sousOrdonnateur.prendreOrdonnanceEnCharge(ordon);
 			            sousOrdonnateur.addEnCours(ordon);
 			            sousOrdonnateur.majComptabilite(ordon);
-			            Action act = new Action();
+			            Action act = new Action(ds);
 			    	    act.setLibelle("Prise en charge");
 			    	    act.setDate(date);
 			    	    act.setType(1);
@@ -662,7 +690,7 @@ public class RequeteSql extends HttpServlet
 			            tg.prendreOrdonnanceEnCharge(ordon);
 			            tg.addEnCours(ordon);
 			            tg.viser(ordon);
-			            Action act = new Action();
+			            Action act = new Action(ds);
 			    	    act.setLibelle("Prise en charge");
 			    	    act.setDate(date);
 			    	    act.setType(1);
@@ -690,7 +718,7 @@ public class RequeteSql extends HttpServlet
 				            ordon.clore();
 				            tr_tp.prendreOrdonnanceEnCharge(ordon);
 		    		        tr_tp.majComptabilite(ordon);
-				            Action act = new Action();
+				            Action act = new Action(ds);
 				    	    act.setLibelle("Prise en charge");
 				    	    act.setDate(date);
 				    	    act.setType(1);
@@ -723,6 +751,7 @@ public class RequeteSql extends HttpServlet
 			        {
 			            ordonnateur=(gid_metier.Ordonnateur)Beans.instantiate(this.getClass().getClassLoader(), "gid_metier.Ordonnateur" );
 			            pageContext.setAttribute("ordonnateur", ordonnateur, PageContext.SESSION_SCOPE );
+			            ordonnateur.setDataSource(ds);
 			        }
 				}
 			    catch( Exception e )
@@ -786,7 +815,7 @@ public class RequeteSql extends HttpServlet
 			    	total = new Integer(request.getParameter("montant")).intValue();
 			    }
 			    
-			    OrdonnanceDelegation ordonnance = new OrdonnanceDelegation();
+			    OrdonnanceDelegation ordonnance = new OrdonnanceDelegation(ds);
 			    ordonnance.setLibelle(nomOrdonnance);
 			    ordonnance.setMontant(total);
 			    ordonnance.setInitiateur(ordonnateur);
@@ -794,7 +823,7 @@ public class RequeteSql extends HttpServlet
 			    GregorianCalendar date = new GregorianCalendar();
 			    ordonnance.setDate(new java.util.Date(date.get(GregorianCalendar.YEAR) - 1900,date.get(GregorianCalendar.MONTH), date.get(GregorianCalendar.DAY_OF_MONTH)));
 			    
-			    SousOrdonnateur so = new SousOrdonnateur();
+			    SousOrdonnateur so = new SousOrdonnateur(ds);
 			    try 
 			    {
 			        so.chargeParId(so_select);
@@ -805,7 +834,7 @@ public class RequeteSql extends HttpServlet
 			        System.out.println(e);
 			    }
 			    
-			    TG tres = new TG();
+			    TG tres = new TG(ds);
 			    try
 			    {
 			        tres.chargeParId(tg_select);
@@ -820,7 +849,7 @@ public class RequeteSql extends HttpServlet
 			        System.out.println(i);
 			        int numeroProduit = new Integer(request.getParameter("sel[" + i + "]")).intValue();
 			        int quantiteProduit = new Integer(request.getParameter("selq[" + i + "]")).intValue();
-			        Consommable conso = new Consommable();
+			        Consommable conso = new Consommable(ds);
 			        conso.setId(numeroProduit);
 			        conso.setQuantite(quantiteProduit);
 			        ordonnance.addConsommable(conso);
@@ -844,7 +873,6 @@ public class RequeteSql extends HttpServlet
 			    {
 			        try
 			        {
-			            
 			            ordonnateur.retirerOrdonnanceDelegation((OrdonnanceDelegation)ordonnateur.getEnCours().elementAt(new Integer(request.getParameter("place")).intValue()));
 			            ordonnateur.removeEnCours((OrdonnanceDelegation)ordonnateur.getEnCours().elementAt(new Integer(request.getParameter("place")).intValue()));
 			        }
@@ -857,7 +885,6 @@ public class RequeteSql extends HttpServlet
 			    {
 			        try
 			        {
-			           
 			            ordonnateur.retirerOrdonnanceDelegation((OrdonnanceDelegation)ordonnateur.getATraiters().elementAt(new Integer(request.getParameter("place")).intValue()));
 			            ordonnateur.removeATraiter((OrdonnanceDelegation)ordonnateur.getATraiters().elementAt(new Integer(request.getParameter("place")).intValue()));
 			        }
@@ -866,7 +893,7 @@ public class RequeteSql extends HttpServlet
 			            System.out.println(e.getMessage());
 			        }
 			    }
-			    Comptabilite comp = new Comptabilite();
+			    Comptabilite comp = new Comptabilite(ds);
 			    try
 			    {
 			        comp.chargeParIdActeur(ordonnateur.getId());
