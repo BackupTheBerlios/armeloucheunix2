@@ -579,6 +579,45 @@ public class SousOrdonnateur extends Acteur {
 					conn2 = null;
 				}
 			}
+			try
+			 {
+			    conn2 = ds.getConnection();
+				s2 = conn2.createStatement();
+				String query = "SELECT id FROM ordonnance WHERE etat='3' AND id IN (SELECT ordonnance_id FROM a_traiter WHERE acteur_id='" + getId() + "' AND ordonnance_id NOT IN (SELECT ordonnance_id FROM a_traiter WHERE acteur_id!='" + getId() + "'))";
+				res2 = s2.executeQuery(query);
+				while(res2.next())
+				{
+				    OrdonnanceDelegation ordon  =  new OrdonnanceDelegation();
+				    ordon.chargeParId(res2.getInt("id"));
+					addATraiter(ordon);
+				}
+			}
+		    catch (SQLException e)
+			{
+		        System.out.println(e.getMessage());
+			}
+			finally
+			{
+				if (res2 != null)
+				{
+					try {
+						res2.close();
+					} catch (SQLException e) {}
+					res2 = null;
+				}
+				if (s2 != null) {
+					try {
+						s2.close();
+					} catch (SQLException e) {}
+					s2 = null;
+				}
+				if (conn2 != null) {
+					try {
+						conn2.close();
+					} catch (SQLException e) {}
+					conn2 = null;
+				}
+			}
 		}
 		catch (SQLException e)
 		{

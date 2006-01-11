@@ -225,7 +225,8 @@ public class Operation extends ObjetPersistant {
 		        setDate(res.getDate("date"));
 		        setType(res.getString("type"));
 		        Comptabilite compta = new Comptabilite();
-		        compta.chargeParId(res.getInt("comptabilite_id"));
+		        compta.setId(res.getInt("comptabilite_id"));
+		        //compta.chargeParId(res.getInt("comptabilite_id"));
 		        setComptabilite(compta);
 		        OrdonnanceDelegation ordonnance = new OrdonnanceDelegation();
 		        ordonnance.chargeParId(res.getInt("ordonnance_id"));
